@@ -84,31 +84,45 @@ const clients = [
   {
     category: "Retail & Fashion",
     names: [
-      "Khaadi",
-      "Nishat Linen",
-      "Borjan",
-      "Limelight",
-      "Outfitters",
-      "MTJ - Tariq Jamil",
-      "Junaid Jamshed",
-      "Wasim Badami by Hemani",
+      { name: "Khaadi", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Ctext x='50' y='25' font-family='Georgia,serif' font-size='18' font-weight='bold' text-anchor='middle' fill='%234a5568'%3EKHAADI%3C/text%3E%3C/svg%3E" },
+      { name: "Nishat Linen", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Ctext x='50' y='20' font-family='Arial' font-size='12' font-weight='bold' text-anchor='middle' fill='%232d3748'%3ENishat%3C/text%3E%3Ctext x='50' y='32' font-family='Arial' font-size='10' text-anchor='middle' fill='%234a5568'%3ELinen%3C/text%3E%3C/svg%3E" },
+      { name: "Borjan", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Ctext x='50' y='25' font-family='Arial' font-size='20' font-weight='bold' text-anchor='middle' fill='%23000'%3EBORJAN%3C/text%3E%3C/svg%3E" },
+      { name: "Limelight", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Ctext x='50' y='25' font-family='Arial' font-size='14' font-weight='bold' text-anchor='middle' fill='%2366cc66'%3ELIMELIGHT%3C/text%3E%3C/svg%3E" },
+      { name: "Outfitters", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Ctext x='50' y='25' font-family='Arial' font-size='14' font-weight='bold' text-anchor='middle' fill='%23000'%3EOUTFITTERS%3C/text%3E%3C/svg%3E" },
+      { name: "MTJ - Tariq Jamil", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Ctext x='50' y='22' font-family='Georgia,serif' font-size='18' font-weight='bold' text-anchor='middle' fill='%23228822'%3EMTJ%3C/text%3E%3Ctext x='50' y='35' font-family='Arial' font-size='8' text-anchor='middle' fill='%234a5568'%3ETariq Jamil%3C/text%3E%3C/svg%3E" },
+      { name: "Junaid Jamshed", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Ctext x='50' y='22' font-family='Georgia,serif' font-size='16' font-weight='bold' text-anchor='middle' fill='%23000'%3EJ.%3C/text%3E%3Ctext x='50' y='34' font-family='Arial' font-size='10' text-anchor='middle' fill='%234a5568'%3EJunaid Jamshed%3C/text%3E%3C/svg%3E" },
+      { name: "Wasim Badami by Hemani", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Ctext x='50' y='20' font-family='Arial' font-size='10' font-weight='bold' text-anchor='middle' fill='%23000'%3EWasim Badami%3C/text%3E%3Ctext x='50' y='32' font-family='Arial' font-size='8' text-anchor='middle' fill='%234a5568'%3Eby Hemani%3C/text%3E%3C/svg%3E" },
     ],
   },
   {
     category: "Food & Restaurants",
-    names: ["KFC", "McDonald's", "Nestlé", "Imtiaz Super Market"],
+    names: [
+      { name: "KFC", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' rx='5' fill='%23e4002b'/%3E%3Ctext x='50' y='28' font-family='Arial' font-size='20' font-weight='bold' text-anchor='middle' fill='white'%3EKFC%3C/text%3E%3C/svg%3E" },
+      { name: "McDonald's", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Cpath d='M20,10 Q30,5 35,20 Q40,5 50,10' fill='none' stroke='%23FFC72C' stroke-width='8' stroke-linecap='round'/%3E%3Ctext x='50' y='35' font-family='Arial' font-size='10' font-weight='bold' text-anchor='middle' fill='%23DA291C'%3EMcDonald's%3C/text%3E%3C/svg%3E" },
+      { name: "Nestlé", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Ctext x='50' y='25' font-family='Arial' font-size='18' font-weight='bold' text-anchor='middle' fill='%23000'%3ENestl%C3%A9%3C/text%3E%3C/svg%3E" },
+      { name: "Imtiaz Super Market", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' rx='3' fill='%2300a651'/%3E%3Ctext x='50' y='27' font-family='Arial' font-size='18' font-weight='bold' text-anchor='middle' fill='white'%3EIMTIAZ%3C/text%3E%3C/svg%3E" },
+    ],
   },
   {
     category: "Automotive",
-    names: ["KIA Motors"],
+    names: [
+      { name: "KIA Motors", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Cellipse cx='50' cy='20' rx='30' ry='15' fill='none' stroke='%23bb162b' stroke-width='2'/%3E%3Ctext x='50' y='25' font-family='Arial' font-size='16' font-weight='bold' text-anchor='middle' fill='%23bb162b'%3EKIA%3C/text%3E%3C/svg%3E" },
+    ],
   },
   {
     category: "Shopping Malls",
-    names: ["ACE Galleria", "Shamim Pacity", "Sultan Plaza"],
+    names: [
+      { name: "ACE Galleria", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Ctext x='50' y='25' font-family='Arial' font-size='16' font-weight='bold' text-anchor='middle' fill='%232d3748'%3EACE GALLERIA%3C/text%3E%3C/svg%3E" },
+      { name: "Shamim Pacity", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Ctext x='50' y='25' font-family='Arial' font-size='14' font-weight='bold' text-anchor='middle' fill='%234a5568'%3ESHAMIM PACITY%3C/text%3E%3C/svg%3E" },
+      { name: "Sultan Plaza", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Ctext x='50' y='25' font-family='Times New Roman' font-size='16' font-weight='bold' text-anchor='middle' fill='%23000'%3ESultan Plaza%3C/text%3E%3C/svg%3E" },
+    ],
   },
   {
     category: "Heritage & Government",
-    names: ["Noor Mahal", "Various Corporate Offices"],
+    names: [
+      { name: "Noor Mahal", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Cpath d='M20 30 L50 10 L80 30 V35 H20 Z' fill='%23d4af37' stroke='%23000' stroke-width='1'/%3E%3Ctext x='50' y='38' font-family='Arial' font-size='10' font-weight='bold' text-anchor='middle' fill='%23000'%3ENoor Mahal%3C/text%3E%3C/svg%3E" },
+      { name: "Various Corporate Offices", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect x='40' y='10' width='20' height='25' fill='%23718096'/%3E%3Ctext x='50' y='39' font-family='Arial' font-size='8' text-anchor='middle' fill='%234a5568'%3ECorporate Offices%3C/text%3E%3C/svg%3E" },
+    ],
   },
 ];
 
@@ -221,17 +235,25 @@ export default function ProjectsPage() {
                   <h3 className="font-semibold text-primary mb-4 text-lg">
                     {group.category}
                   </h3>
-                  <ul className="space-y-2">
-                    {group.names.map((name) => (
-                      <li
-                        key={name}
-                        className="flex items-center text-sm text-gray-600"
+                  <div className="grid grid-cols-1 gap-3">
+                    {group.names.map((client) => (
+                      <div
+                        key={client.name}
+                        className="flex items-center gap-3 p-2 rounded-lg hover:bg-red-50/50 transition-colors border border-transparent hover:border-red-100"
                       >
-                        <Users className="h-3 w-3 text-accent mr-2" />
-                        {name}
-                      </li>
+                         <div className="relative w-20 h-8 flex-shrink-0 bg-white rounded border border-gray-100 flex items-center justify-center p-1">
+                           <Image 
+                             src={client.logo} 
+                             alt={client.name} 
+                             width={80}
+                             height={32}
+                             className="object-contain max-h-full w-auto" 
+                           />
+                         </div>
+                        <span className="text-sm font-medium text-gray-700">{client.name}</span>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 </CardContent>
               </Card>
             ))}
