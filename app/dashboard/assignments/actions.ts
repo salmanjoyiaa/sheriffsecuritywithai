@@ -60,11 +60,20 @@ export async function createAssignment(formData: FormData) {
   }
 
   // Check for overlapping assignments using the database function
+  const startDateStr = validatedData.data.start_date instanceof Date 
+    ? validatedData.data.start_date.toISOString().split('T')[0] 
+    : validatedData.data.start_date;
+  const endDateStr = validatedData.data.end_date 
+    ? (validatedData.data.end_date instanceof Date 
+        ? validatedData.data.end_date.toISOString().split('T')[0] 
+        : validatedData.data.end_date)
+    : null;
+  
   const { data: overlapCheck, error: overlapError } = await supabase
     .rpc("check_assignment_overlap", {
       p_guard_id: validatedData.data.guard_id,
-      p_start_date: validatedData.data.start_date,
-      p_end_date: validatedData.data.end_date || null,
+      p_start_date: startDateStr,
+      p_end_date: endDateStr,
       p_exclude_id: null,
     });
 
@@ -79,8 +88,14 @@ export async function createAssignment(formData: FormData) {
     guard_id: validatedData.data.guard_id,
     place_id: validatedData.data.place_id,
     shift_type: validatedData.data.shift_type,
-    start_date: validatedData.data.start_date,
-    end_date: validatedData.data.end_date || null,
+    start_date: validatedData.data.start_date instanceof Date 
+      ? validatedData.data.start_date.toISOString().split('T')[0] 
+      : validatedData.data.start_date,
+    end_date: validatedData.data.end_date 
+      ? (validatedData.data.end_date instanceof Date 
+          ? validatedData.data.end_date.toISOString().split('T')[0] 
+          : validatedData.data.end_date)
+      : null,
     status: 'active',
     notes: validatedData.data.notes || null,
   });
@@ -132,11 +147,20 @@ export async function updateAssignment(id: string, formData: FormData) {
   }
 
   // Check for overlapping assignments (excluding current assignment)
+  const startDateStr = validatedData.data.start_date instanceof Date 
+    ? validatedData.data.start_date.toISOString().split('T')[0] 
+    : validatedData.data.start_date;
+  const endDateStr = validatedData.data.end_date 
+    ? (validatedData.data.end_date instanceof Date 
+        ? validatedData.data.end_date.toISOString().split('T')[0] 
+        : validatedData.data.end_date)
+    : null;
+  
   const { data: overlapCheck, error: overlapError } = await supabase
     .rpc("check_assignment_overlap", {
       p_guard_id: validatedData.data.guard_id,
-      p_start_date: validatedData.data.start_date,
-      p_end_date: validatedData.data.end_date || null,
+      p_start_date: startDateStr,
+      p_end_date: endDateStr,
       p_exclude_id: id,
     });
 
@@ -152,9 +176,9 @@ export async function updateAssignment(id: string, formData: FormData) {
       guard_id: validatedData.data.guard_id,
       place_id: validatedData.data.place_id,
       shift_type: validatedData.data.shift_type,
-      start_date: validatedData.data.start_date,
-      end_date: validatedData.data.end_date || null,
-      status: status,
+      start_date: startDateStr,
+      end_date: endDateStr,
+      status: status as "active" | "completed" | "cancelled",
       notes: validatedData.data.notes || null,
       updated_at: new Date().toISOString(),
     })

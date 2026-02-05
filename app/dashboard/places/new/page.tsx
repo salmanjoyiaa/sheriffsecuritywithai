@@ -75,7 +75,7 @@ export default async function NewPlacePage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={createPlace} className="space-y-6">
+          <form action={createPlace as unknown as (formData: FormData) => void} className="space-y-6">
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="name">Place Name *</Label>

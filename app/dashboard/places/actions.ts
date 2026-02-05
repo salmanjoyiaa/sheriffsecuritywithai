@@ -45,15 +45,19 @@ export async function createPlace(formData: FormData) {
     ? profile.branch_id 
     : validatedData.data.branch_id;
 
+  if (!finalBranchId) {
+    return { error: "Branch is required" };
+  }
+
   const { error } = await supabase.from("places").insert({
     name: validatedData.data.name,
     address: validatedData.data.address,
     city: validatedData.data.city,
-    contact_person: validatedData.data.contact_person || null,
-    contact_phone: validatedData.data.contact_phone || null,
+    contact_person: validatedData.data.contact_person ?? null,
+    contact_phone: validatedData.data.contact_phone ?? null,
     branch_id: finalBranchId,
     status: validatedData.data.status,
-    notes: validatedData.data.notes || null,
+    notes: validatedData.data.notes ?? null,
   });
 
   if (error) {
@@ -105,17 +109,21 @@ export async function updatePlace(id: string, formData: FormData) {
     ? profile.branch_id 
     : validatedData.data.branch_id;
 
+  if (!finalBranchId) {
+    return { error: "Branch is required" };
+  }
+
   const { error } = await supabase
     .from("places")
     .update({
       name: validatedData.data.name,
       address: validatedData.data.address,
       city: validatedData.data.city,
-      contact_person: validatedData.data.contact_person || null,
-      contact_phone: validatedData.data.contact_phone || null,
+      contact_person: validatedData.data.contact_person ?? null,
+      contact_phone: validatedData.data.contact_phone ?? null,
       branch_id: finalBranchId,
       status: validatedData.data.status,
-      notes: validatedData.data.notes || null,
+      notes: validatedData.data.notes ?? null,
       updated_at: new Date().toISOString(),
     })
     .eq("id", id);

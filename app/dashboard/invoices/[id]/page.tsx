@@ -121,12 +121,12 @@ export default async function InvoicePage({ params }: InvoicePageProps) {
             invoice={{
               invoice_number: invoice.invoice_number,
               invoice_date: invoice.invoice_date,
-              due_date: invoice.due_date,
+              due_date: invoice.due_date || undefined,
               status: invoice.status,
               subtotal: invoice.subtotal,
               tax_amount: invoice.tax_amount,
               total: invoice.total,
-              notes: invoice.notes,
+              notes: invoice.notes || undefined,
               place: place ? {
                 name: place.name,
                 address: place.address,
@@ -163,8 +163,12 @@ export default async function InvoicePage({ params }: InvoicePageProps) {
               <div>
                 <CardTitle>Invoice Details</CardTitle>
                 <CardDescription>
-                  Period: {format(new Date(invoice.period_start), "MMM d")} -{" "}
-                  {format(new Date(invoice.period_end), "MMM d, yyyy")}
+                  {invoice.period_start && invoice.period_end ? (
+                    <>Period: {format(new Date(invoice.period_start), "MMM d")} -{" "}
+                    {format(new Date(invoice.period_end), "MMM d, yyyy")}</>
+                  ) : (
+                    <>Invoice Date: {format(new Date(invoice.invoice_date), "MMM d, yyyy")}</>
+                  )}
                 </CardDescription>
               </div>
               <Badge variant={statusColors[invoice.status]} className="text-sm">
@@ -279,7 +283,7 @@ export default async function InvoicePage({ params }: InvoicePageProps) {
               <div>
                 <p className="text-sm text-muted-foreground">Due Date</p>
                 <p className="font-medium">
-                  {format(new Date(invoice.due_date), "PPP")}
+                  {invoice.due_date ? format(new Date(invoice.due_date), "PPP") : "N/A"}
                 </p>
               </div>
               <div>
@@ -300,7 +304,7 @@ export default async function InvoicePage({ params }: InvoicePageProps) {
                 {formatCurrency(invoice.total)}
               </div>
               <p className="text-sm text-muted-foreground mt-1">
-                Due by {format(new Date(invoice.due_date), "PPP")}
+                {invoice.due_date ? <>Due by {format(new Date(invoice.due_date), "PPP")}</> : "Due date not set"}
               </p>
             </CardContent>
           </Card>

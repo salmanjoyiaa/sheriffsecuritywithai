@@ -289,7 +289,7 @@ export async function updateInvoiceStatus(id: string, status: string) {
   const { error } = await supabase
     .from("invoices")
     .update({
-      status,
+      status: status as "draft" | "sent" | "paid" | "partial" | "unpaid" | "overdue" | "cancelled",
       updated_at: new Date().toISOString(),
     })
     .eq("id", id);

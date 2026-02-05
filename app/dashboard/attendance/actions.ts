@@ -27,6 +27,10 @@ export async function markAttendance(formData: FormData) {
     return { error: validatedData.error.errors[0].message };
   }
 
+  if (!validatedData.data.assignment_id) {
+    return { error: "Assignment ID is required" };
+  }
+
   // Check for existing attendance record
   const { data: existing } = await supabase
     .from("attendance")
@@ -150,7 +154,7 @@ export async function markBulkAttendance(
         .select("id")
         .eq("assignment_id", record.assignment_id)
         .eq("date", date)
-        .eq("shift", shift)
+        .eq("shift", shift as "day" | "night")
         .single();
 
       if (existing) {
@@ -158,7 +162,7 @@ export async function markBulkAttendance(
         const { error } = await supabase
           .from("attendance")
           .update({
-            status: record.status,
+            status: record.status as "present" | "absent" | "leave" | "half_day" | "late",
             notes: record.notes || null,
             marked_by: user.id,
             updated_at: new Date().toISOString(),
@@ -174,8 +178,8 @@ export async function markBulkAttendance(
           place_id: placeId,
           assignment_id: record.assignment_id,
           date,
-          shift,
-          status: record.status,
+          shift: shift as "day" | "night",
+          status: record.status as "present" | "absent" | "leave" | "half_day" | "late",
           notes: record.notes || null,
           marked_by: user.id,
         });
@@ -239,11 +243,13 @@ export async function getAssignmentsForAttendance(
       .select("assignment_id, status, notes")
       .in("assignment_id", assignmentIds)
       .eq("date", date)
-      .eq("shift", shift);
+      .eq("shift", shift as "day" | "night");
 
     if (attendance) {
       attendanceRecords = attendance.reduce((acc, a) => {
-        acc[a.assignment_id] = { status: a.status, notes: a.notes };
+        if (a.assignment_id) {
+          acc[a.assignment_id] = { status: a.status, notes: a.notes };
+        }
         return acc;
       }, {} as Record<string, { status: string; notes: string | null }>);
     }

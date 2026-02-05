@@ -17,16 +17,16 @@ interface AttendanceRecord {
   id: string;
   status: string;
   shift: string;
-  guard?: { full_name?: string; guard_code?: string } | null;
-  place?: { name?: string } | null;
+  guard: { full_name: string | null; guard_code: string } | null;
+  place: { name: string } | null;
 }
 
 interface InvoiceRecord {
   id: string;
   invoice_number: string;
-  total_amount: number;
+  total_amount: number | null;
   status: string;
-  place?: { name?: string } | null;
+  place: { name: string } | null;
 }
 
 async function DashboardStats() {
@@ -224,7 +224,7 @@ async function RecentInvoices() {
                 </div>
                 <div className="text-right">
                   <p className="font-medium text-sm">
-                    Rs. {invoice.total_amount.toLocaleString()}
+                    Rs. {(invoice.total_amount || 0).toLocaleString()}
                   </p>
                   <Badge 
                     variant={invoice.status === "paid" ? "success" : "destructive"} 

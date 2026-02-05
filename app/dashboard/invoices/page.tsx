@@ -199,8 +199,10 @@ export default async function InvoicesPage() {
                       </TableCell>
                       <TableCell>
                         <div className="text-sm">
-                          {format(new Date(invoice.period_start), "MMM d")} -{" "}
-                          {format(new Date(invoice.period_end), "MMM d, yyyy")}
+                          {invoice.period_start && invoice.period_end 
+                            ? <>{format(new Date(invoice.period_start), "MMM d")} -{" "}
+                              {format(new Date(invoice.period_end), "MMM d, yyyy")}</>
+                            : format(new Date(invoice.invoice_date), "MMM d, yyyy")}
                         </div>
                       </TableCell>
                       <TableCell>
@@ -209,7 +211,7 @@ export default async function InvoicesPage() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        {format(new Date(invoice.due_date), "PP")}
+                        {invoice.due_date ? format(new Date(invoice.due_date), "PP") : "N/A"}
                       </TableCell>
                       <TableCell>
                         <Badge variant={statusColors[invoice.status]}>

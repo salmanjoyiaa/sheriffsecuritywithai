@@ -46,6 +46,10 @@ export async function createGuard(formData: FormData) {
     ? profile.branch_id 
     : validatedData.data.branch_id;
 
+  if (!finalBranchId) {
+    return { error: "Branch is required" };
+  }
+
   // Check if guard_code is unique within the branch
   const { data: existingGuard } = await supabase
     .from("guards")
@@ -121,6 +125,10 @@ export async function updateGuard(id: string, formData: FormData) {
     ? profile.branch_id 
     : validatedData.data.branch_id;
 
+  if (!finalBranchId) {
+    return { error: "Branch is required" };
+  }
+
   // Check if guard_code is unique within the branch (excluding current guard)
   const { data: existingGuard } = await supabase
     .from("guards")
@@ -140,11 +148,11 @@ export async function updateGuard(id: string, formData: FormData) {
       guard_code: validatedData.data.guard_code,
       name: validatedData.data.name,
       cnic: validatedData.data.cnic,
-      phone: validatedData.data.phone || null,
-      address: validatedData.data.address || null,
+      phone: validatedData.data.phone ?? null,
+      address: validatedData.data.address ?? null,
       branch_id: finalBranchId,
       status: validatedData.data.status,
-      notes: validatedData.data.notes || null,
+      notes: validatedData.data.notes ?? null,
       updated_at: new Date().toISOString(),
     })
     .eq("id", id);

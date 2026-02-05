@@ -66,10 +66,12 @@ export default async function AttendancePage() {
   let filteredAttendance = attendance || [];
   if (profile.role === "branch_admin" && profile.branch_id) {
     filteredAttendance = filteredAttendance.filter((a) => {
-      const assignment = a.assignment as {
-        guard: { branch_id: string } | null;
-        place: { branch_id: string } | null;
-      } | null;
+      const assignment = (a as unknown as {
+        assignment: {
+          guard: { branch_id: string } | null;
+          place: { branch_id: string } | null;
+        } | null;
+      }).assignment;
       return (
         assignment?.guard?.branch_id === profile.branch_id ||
         assignment?.place?.branch_id === profile.branch_id
@@ -179,12 +181,14 @@ export default async function AttendancePage() {
               </TableHeader>
               <TableBody>
                 {filteredAttendance.map((record) => {
-                  const assignment = record.assignment as {
-                    id: string;
-                    shift: string;
-                    guard: { id: string; name: string; guard_code: string; photo_url: string | null } | null;
-                    place: { id: string; name: string; city: string } | null;
-                  } | null;
+                  const assignment = (record as unknown as {
+                    assignment: {
+                      id: string;
+                      shift_type: string;
+                      guard: { id: string; name: string; guard_code: string; photo_url: string | null } | null;
+                      place: { id: string; name: string; city: string } | null;
+                    } | null;
+                  }).assignment;
 
                   return (
                     <TableRow key={record.id}>

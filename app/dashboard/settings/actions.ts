@@ -17,8 +17,8 @@ export interface CompanySettings {
   invoice_prefix: string;
   invoice_footer: string | null;
   tax_rate: number;
-  created_at: string;
-  updated_at: string;
+  created_at: string | null;
+  updated_at: string | null;
 }
 
 export async function getCompanySettings(): Promise<{

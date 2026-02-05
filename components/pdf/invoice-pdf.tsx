@@ -223,7 +223,7 @@ interface InvoicePDFProps {
   invoice: {
     invoice_number: string;
     invoice_date: string;
-    due_date: string;
+    due_date?: string;
     status: string;
     subtotal: number;
     tax_amount: number;
@@ -309,14 +309,14 @@ export function InvoicePDF({ invoice, items }: InvoicePDFProps) {
             </Text>
 
             <Text style={styles.infoLabel}>Due Date</Text>
-            <Text style={styles.infoValue}>{formatDate(invoice.due_date)}</Text>
+            <Text style={styles.infoValue}>{invoice.due_date ? formatDate(invoice.due_date) : "N/A"}</Text>
 
             <Text style={styles.infoLabel}>Status</Text>
             <Text
               style={[
                 styles.statusBadge,
-                invoice.status === "unpaid" && styles.statusUnpaid,
-                invoice.status === "sent" && styles.statusSent,
+                ...(invoice.status === "unpaid" ? [styles.statusUnpaid] : []),
+                ...(invoice.status === "sent" ? [styles.statusSent] : []),
               ]}
             >
               {invoice.status.toUpperCase()}

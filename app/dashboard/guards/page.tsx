@@ -24,15 +24,18 @@ import { Plus, Shield, Users } from "lucide-react";
 interface Guard {
   id: string;
   name: string;
-  full_name?: string;
+  full_name: string | null;
   guard_code: string;
   cnic: string;
-  phone: string;
+  phone: string | null;
   address: string | null;
-  status: string;
+  status: "active" | "inactive";
   branch_id: string;
-  photo_url?: string | null;
-  branch?: { name: string } | null;
+  photo_url: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string | null;
+  branch: { name: string } | null;
 }
 
 export default async function GuardsPage() {

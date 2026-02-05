@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -20,7 +20,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { loginSchema, type LoginFormData } from "@/lib/validations";
 import { createClient } from "@/lib/supabase/client";
 
-export default function LoginPage() {
+function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -141,5 +141,21 @@ export default function LoginPage() {
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <Card className="w-full max-w-md mx-4">
+        <CardHeader className="text-center">
+          <div className="flex justify-center mb-4">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        </CardHeader>
+      </Card>
+    }>
+      <LoginForm />
+    </Suspense>
   );
 }

@@ -66,7 +66,7 @@ export default async function NewInventoryItemPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={createInventoryItem} className="space-y-6">
+          <form action={createInventoryItem as unknown as (formData: FormData) => void} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="name">Item Name *</Label>
               <Input

@@ -130,14 +130,14 @@ export async function generateAttendanceReport(formData: FormData) {
   let filteredAttendance = attendance || [];
   if (validatedData.data.guard_id) {
     filteredAttendance = filteredAttendance.filter(
-      (a) => (a.assignment as { guard: { id: string } })?.guard?.id === validatedData.data.guard_id
+      (a) => ((a as unknown as { assignment: { guard: { id: string } } }).assignment)?.guard?.id === validatedData.data.guard_id
     );
   }
 
   // Filter by place if specified
   if (validatedData.data.place_id) {
     filteredAttendance = filteredAttendance.filter(
-      (a) => (a.assignment as { place: { id: string } })?.place?.id === validatedData.data.place_id
+      (a) => ((a as unknown as { assignment: { place: { id: string } } }).assignment)?.place?.id === validatedData.data.place_id
     );
   }
 
@@ -145,10 +145,12 @@ export async function generateAttendanceReport(formData: FormData) {
   const guardMap = new Map<string, AttendanceReportData>();
 
   filteredAttendance.forEach((record) => {
-    const assignment = record.assignment as {
-      guard: { id: string; name: string; guard_code: string; photo_url: string | null };
-      place: { id: string; name: string; city: string };
-    };
+    const assignment = (record as unknown as {
+      assignment: {
+        guard: { id: string; name: string; guard_code: string; photo_url: string | null };
+        place: { id: string; name: string; city: string };
+      };
+    }).assignment;
 
     if (!assignment?.guard) return;
 
@@ -229,6 +231,7 @@ export async function generateAttendanceReport(formData: FormData) {
 
     // Add inventory to each guard
     inventoryAssignments?.forEach((assignment) => {
+      if (!assignment.guard_id) return;
       const guardData = guardMap.get(assignment.guard_id);
       if (guardData) {
         guardData.inventory.push({

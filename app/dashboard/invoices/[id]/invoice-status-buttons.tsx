@@ -7,7 +7,7 @@ import { useTransition } from "react";
 interface InvoiceStatusButtonsProps {
   invoiceId: string;
   status: string;
-  updateStatus: (id: string, status: string) => Promise<void>;
+  updateStatus: (id: string, status: string) => Promise<{ error?: string; success?: boolean }>;
 }
 
 export function InvoiceStatusButtons({ 

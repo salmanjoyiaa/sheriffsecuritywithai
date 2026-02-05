@@ -129,7 +129,7 @@ export default async function MonthlySummaryPage() {
   let pendingInvoicesQuery = supabase
     .from("invoices")
     .select("id", { count: "exact" })
-    .in("status", ["pending", "unpaid"])
+    .in("status", ["draft", "sent", "unpaid"] as const)
     .gte("invoice_date", currentMonthStart)
     .lte("invoice_date", currentMonthEnd);
   

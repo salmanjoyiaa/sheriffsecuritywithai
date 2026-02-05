@@ -91,7 +91,7 @@ export default async function NewInventoryUnitPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={handleSubmit} className="space-y-6">
+          <form action={handleSubmit as unknown as (formData: FormData) => void} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="item_id">Item Type *</Label>
               <Select name="item_id" required>

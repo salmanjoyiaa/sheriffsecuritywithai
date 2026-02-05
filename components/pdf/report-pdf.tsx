@@ -203,8 +203,8 @@ interface GuardAttendanceData {
     date: string;
     shift: string;
     status: string;
-    check_in_time?: string;
-    check_out_time?: string;
+    check_in_time: string | null;
+    check_out_time: string | null;
   }>;
 }
 
@@ -330,18 +330,18 @@ export function AttendanceReportPDF({ data, period }: AttendanceReportPDFProps) 
 interface PlaceReportData {
   place: {
     name: string;
-    address?: string;
-    city?: string;
-    contact_person?: string;
-    contact_phone?: string;
+    address: string | null;
+    city: string | null;
+    contact_person: string | null;
+    contact_phone: string | null;
   };
   guards: Array<{
     id: string;
     name: string;
     guard_code: string;
     shift: string;
-    start_date?: string;
-    end_date?: string;
+    start_date: string;
+    end_date: string | null;
   }>;
   attendance_summary: {
     total_records: number;

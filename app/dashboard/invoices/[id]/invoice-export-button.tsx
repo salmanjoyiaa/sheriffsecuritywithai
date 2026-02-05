@@ -14,7 +14,7 @@ interface InvoiceExportProps {
   invoice: {
     invoice_number: string;
     invoice_date: string;
-    due_date: string;
+    due_date?: string;
     status: string;
     subtotal: number;
     tax_amount: number;

@@ -18,10 +18,9 @@ interface Branch {
   id: string;
   name: string;
   city: string;
-  address: string | null;
-  phone: string | null;
-  manager_id: string | null;
-  is_active: boolean;
+  address: string;
+  phone: string;
+  created_at: string;
 }
 
 interface BranchWithCounts extends Branch {
@@ -55,7 +54,7 @@ export default async function BranchesPage() {
 
   // Get place and guard counts for each branch
   const branchesWithCounts: BranchWithCounts[] = await Promise.all(
-    (branches || []).map(async (branch: Branch) => {
+    (branches || []).map(async (branch) => {
       const [{ count: placeCount }, { count: guardCount }] = await Promise.all([
         supabase
           .from("places")

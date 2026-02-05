@@ -43,7 +43,9 @@ interface Guard {
 
 interface AssignmentWithAttendance {
   id: string;
-  shift: string;
+  shift_type: "day" | "night" | "both";
+  start_date: string;
+  end_date: string | null;
   guard: Guard | null;
   attendance: { status: string; notes: string | null } | null;
 }

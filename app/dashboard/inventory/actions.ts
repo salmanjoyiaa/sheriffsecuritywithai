@@ -180,6 +180,10 @@ export async function createInventoryUnit(formData: FormData) {
     ? profile.branch_id 
     : validatedData.data.branch_id;
 
+  if (!finalBranchId) {
+    return { error: "Branch is required" };
+  }
+
   const { error } = await supabase.from("inventory_units").insert({
     item_id: validatedData.data.item_id,
     serial_number: validatedData.data.serial_number,
@@ -382,14 +386,20 @@ export async function assignInventoryUnit(formData: FormData) {
       .eq("id", validatedData.data.item_id);
   }
 
+  // Ensure we have an item_id
+  const finalItemId = validatedData.data.item_id;
+  if (!finalItemId) {
+    return { error: "Item is required" };
+  }
+
   // Create assignment
   const { error: assignmentError } = await supabase.from("inventory_assignments").insert({
     branch_id: validatedData.data.branch_id,
     assigned_to_type: validatedData.data.assigned_to_type,
-    place_id: validatedData.data.place_id,
-    guard_id: validatedData.data.guard_id,
-    item_id: validatedData.data.item_id,
-    unit_id: validatedData.data.unit_id,
+    place_id: validatedData.data.place_id ?? null,
+    guard_id: validatedData.data.guard_id ?? null,
+    item_id: finalItemId,
+    unit_id: validatedData.data.unit_id ?? null,
     quantity: validatedData.data.quantity,
     notes: validatedData.data.notes || null,
   });
