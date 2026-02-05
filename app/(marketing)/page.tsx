@@ -89,40 +89,40 @@ export default function HomePage() {
         </div>
         <div className="absolute inset-0 bg-black/20" />
         
-        <div className="container relative py-20 md:py-32">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="container relative px-4 py-12 sm:py-16 md:py-20 lg:py-32">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
             {/* Left Content */}
-            <div className="max-w-2xl animate-fade-in-up">
-              <div className="inline-flex items-center rounded-full bg-secondary/20 backdrop-blur-sm px-4 py-2 text-sm font-medium text-secondary mb-6 shadow-lg animate-pulse-slow">
-                <Shield className="mr-2 h-4 w-4" />
+            <div className="max-w-2xl animate-fade-in-up text-center lg:text-left">
+              <div className="inline-flex items-center rounded-full bg-secondary/20 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-secondary mb-4 sm:mb-6 shadow-lg animate-pulse-slow">
+                <Shield className="mr-1.5 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                 Since 2004 - Trusted Security Partner
               </div>
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight mb-4 sm:mb-6 leading-tight">
                 Sheriff Security
                 <span className="block text-secondary mt-2 animate-gradient bg-gradient-to-r from-secondary via-yellow-300 to-secondary bg-clip-text text-transparent">
                   The Name of Conservation
                 </span>
               </h1>
-              <p className="text-lg md:text-xl text-gray-200 mb-8 max-w-2xl leading-relaxed">
+              <p className="text-base sm:text-lg md:text-xl text-gray-200 mb-6 sm:mb-8 max-w-2xl leading-relaxed">
                 Professional security services trusted by leading brands across
                 Pakistan. From bodyguards to advanced security systems, we provide
                 comprehensive protection for your business and events.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link href="/contact">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start">
+                <Link href="/contact" className="w-full sm:w-auto">
                   <Button
                     size="lg"
-                    className="bg-secondary text-secondary-foreground hover:bg-secondary/90 hover:scale-105 transition-transform shadow-xl"
+                    className="w-full sm:w-auto bg-secondary text-secondary-foreground hover:bg-secondary/90 hover:scale-105 transition-transform shadow-xl text-sm sm:text-base"
                   >
                     Get a Quote
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
-                <a href="tel:03018689990">
+                <a href="tel:03018689990" className="w-full sm:w-auto">
                   <Button
                     size="lg"
                     variant="outline"
-                    className="border-2 border-white text-white hover:bg-white hover:text-primary transition-all shadow-lg"
+                    className="w-full sm:w-auto border-2 border-white text-white hover:bg-white hover:text-primary transition-all shadow-lg text-sm sm:text-base"
                   >
                     <Phone className="mr-2 h-4 w-4" />
                     03018689990
@@ -132,43 +132,43 @@ export default function HomePage() {
             </div>
 
             {/* Right Side - Elite Commando Avatar */}
-            <div className="flex justify-center lg:justify-end">
+            <div className="flex justify-center lg:justify-end mt-8 lg:mt-0">
               <div className="relative group cursor-pointer" onClick={() => setShowCommando(true)}>
                 {/* Glowing Ring Animation */}
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-secondary via-yellow-300 to-secondary opacity-75 blur-2xl group-hover:opacity-100 transition-opacity duration-500 animate-pulse-slow" />
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-secondary via-yellow-300 to-secondary opacity-75 blur-xl sm:blur-2xl group-hover:opacity-100 transition-opacity duration-500 animate-pulse-slow" />
                 
                 {/* Avatar Container */}
                 <div className="relative">
                   {/* Rotating Border */}
-                  <div className="absolute -inset-4 rounded-full bg-gradient-to-r from-secondary via-yellow-300 to-secondary opacity-75 blur-md group-hover:opacity-100 group-hover:blur-xl transition-all duration-500 animate-spin-slow" />
+                  <div className="absolute -inset-2 sm:-inset-4 rounded-full bg-gradient-to-r from-secondary via-yellow-300 to-secondary opacity-75 blur-sm sm:blur-md group-hover:opacity-100 group-hover:blur-xl transition-all duration-500 animate-spin-slow" />
                   
                   {/* Main Avatar */}
-                  <div className="relative w-72 h-72 md:w-96 md:h-96 rounded-full overflow-hidden border-8 border-white shadow-2xl transform group-hover:scale-105 transition-transform duration-500">
+                  <div className="relative w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden border-4 sm:border-6 md:border-8 border-white shadow-2xl transform group-hover:scale-105 transition-transform duration-500">
                     <div className="absolute inset-0 bg-gradient-to-br from-primary-600 to-primary-900" />
-                    <Shield className="absolute inset-0 m-auto w-40 h-40 md:w-56 md:h-56 text-white/20" />
+                    <Shield className="absolute inset-0 m-auto w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 text-white/20" />
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="text-center animate-float">
-                        <Shield className="w-32 h-32 md:w-40 md:h-40 text-secondary mx-auto mb-4 drop-shadow-2xl" />
-                        <p className="text-white font-bold text-2xl md:text-3xl drop-shadow-lg">Elite Security</p>
-                        <p className="text-secondary text-sm md:text-base font-medium">Click to Meet Our Team</p>
+                      <div className="text-center animate-float px-4">
+                        <Shield className="w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 text-secondary mx-auto mb-2 sm:mb-4 drop-shadow-2xl" />
+                        <p className="text-white font-bold text-xl sm:text-2xl md:text-3xl drop-shadow-lg">Elite Security</p>
+                        <p className="text-secondary text-xs sm:text-sm md:text-base font-medium">Click to Meet Our Team</p>
                       </div>
                     </div>
                   </div>
 
                   {/* Badges */}
-                  <div className="absolute -top-2 -right-2 bg-secondary text-primary px-3 py-1 rounded-full font-bold text-sm shadow-lg animate-bounce-slow flex items-center gap-1">
-                    <Star className="w-4 h-4 fill-current" />
+                  <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 bg-secondary text-primary px-2 py-0.5 sm:px-3 sm:py-1 rounded-full font-bold text-xs sm:text-sm shadow-lg animate-bounce-slow flex items-center gap-1">
+                    <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-current" />
                     Expert
                   </div>
-                  <div className="absolute -bottom-2 -left-2 bg-white text-primary px-3 py-1 rounded-full font-bold text-sm shadow-lg flex items-center gap-1">
-                    <Medal className="w-4 h-4" />
+                  <div className="absolute -bottom-1 -left-1 sm:-bottom-2 sm:-left-2 bg-white text-primary px-2 py-0.5 sm:px-3 sm:py-1 rounded-full font-bold text-xs sm:text-sm shadow-lg flex items-center gap-1">
+                    <Medal className="w-3 h-3 sm:w-4 sm:h-4" />
                     Certified
                   </div>
                 </div>
 
-                {/* Click Indicator */}
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-16 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <p className="text-white text-sm font-medium bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full">
+                {/* Click Indicator - Hidden on mobile */}
+                <div className="hidden sm:block absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-16 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <p className="text-white text-sm font-medium bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full whitespace-nowrap">
                     Click to view our elite commando
                   </p>
                 </div>
@@ -177,18 +177,18 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Decorative Elements */}
-        <div className="absolute top-20 left-10 opacity-20">
-          <Shield className="w-16 h-16 text-secondary animate-float" />
+        {/* Decorative Elements - Hidden on mobile */}
+        <div className="hidden md:block absolute top-20 left-10 opacity-20">
+          <Shield className="w-12 h-12 lg:w-16 lg:h-16 text-secondary animate-float" />
         </div>
-        <div className="absolute bottom-20 right-10 opacity-20">
-          <Shield className="w-20 h-20 text-secondary animate-float-delayed" />
+        <div className="hidden md:block absolute bottom-20 right-10 opacity-20">
+          <Shield className="w-16 h-16 lg:w-20 lg:h-20 text-secondary animate-float-delayed" />
         </div>
       </section>
 
       {/* Commando Modal */}
       <Dialog open={showCommando} onOpenChange={setShowCommando}>
-        <DialogContent className="max-w-4xl p-0 overflow-hidden bg-gradient-to-br from-primary-50 to-white">
+        <DialogContent className="max-w-[95vw] sm:max-w-[90vw] md:max-w-3xl lg:max-w-4xl p-0 overflow-hidden bg-gradient-to-br from-primary-50 to-white max-h-[90vh] overflow-y-auto">
           <div className="relative">
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-5">
@@ -197,76 +197,77 @@ export default function HomePage() {
               }} />
             </div>
 
-            <DialogHeader className="relative p-6 pb-4">
-              <DialogTitle className="text-3xl font-bold text-primary flex items-center gap-3">
-                <Medal className="w-8 h-8 text-secondary" />
-                Elite Security Commando
+            <DialogHeader className="relative p-4 sm:p-6 pb-3 sm:pb-4">
+              <DialogTitle className="text-xl sm:text-2xl md:text-3xl font-bold text-primary flex items-center gap-2 sm:gap-3">
+                <Medal className="w-6 h-6 sm:w-8 sm:h-8 text-secondary flex-shrink-0" />
+                <span className="leading-tight">Elite Security Commando</span>
               </DialogTitle>
-              <p className="text-muted-foreground mt-2">Professional, Trained, and Battle-Ready</p>
+              <p className="text-sm sm:text-base text-muted-foreground mt-1 sm:mt-2">Professional, Trained, and Battle-Ready</p>
             </DialogHeader>
 
-            <div className="relative p-6 pt-2">
-              <div className="grid md:grid-cols-2 gap-6">
+            <div className="relative p-4 sm:p-6 pt-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 {/* Commando Image */}
                 <div className="relative group">
-                  <div className="absolute -inset-2 bg-gradient-to-r from-secondary via-yellow-300 to-secondary rounded-lg opacity-75 group-hover:opacity-100 blur-sm transition-opacity" />
+                  <div className="absolute -inset-1 sm:-inset-2 bg-gradient-to-r from-secondary via-yellow-300 to-secondary rounded-lg opacity-75 group-hover:opacity-100 blur-sm transition-opacity" />
                   <div className="relative rounded-lg overflow-hidden shadow-2xl">
-                    <div className="relative h-96 md:h-[500px] bg-gradient-to-br from-primary-600 to-primary-900">
+                    <div className="relative h-64 sm:h-80 md:h-96 lg:h-[500px] bg-gradient-to-br from-primary-600 to-primary-900">
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <Shield className="w-32 h-32 text-white/20" />
+                        <Shield className="w-24 h-24 sm:w-32 sm:h-32 text-white/20" />
                       </div>
                     </div>
                   </div>
-                  <div className="absolute top-4 right-4 bg-secondary text-primary px-3 py-1 rounded-full font-bold text-sm shadow-lg flex items-center gap-1">
-                    <Star className="w-4 h-4 fill-current" />
+                  <div className="absolute top-2 right-2 sm:top-4 sm:right-4 bg-secondary text-primary px-2 py-0.5 sm:px-3 sm:py-1 rounded-full font-bold text-xs sm:text-sm shadow-lg flex items-center gap-1">
+                    <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-current" />
                     Elite Grade
                   </div>
                 </div>
 
                 {/* Details */}
-                <div className="flex flex-col justify-center space-y-6">
+                <div className="flex flex-col justify-center space-y-4 sm:space-y-6">
                   <div>
-                    <h3 className="text-2xl font-bold text-primary mb-3">Our Elite Force</h3>
-                    <p className="text-gray-600 leading-relaxed">
+                    <h3 className="text-xl sm:text-2xl font-bold text-primary mb-2 sm:mb-3">Our Elite Force</h3>
+                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                       Our commandos undergo rigorous training and certification programs to ensure the highest standards of security and protection. Each member is carefully selected and trained in advanced security protocols.
                     </p>
                   </div>
 
-                  <div className="space-y-4">
-                    <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0">
-                        <CheckCircle2 className="w-5 h-5 text-secondary" />
+                  <div className="space-y-3 sm:space-y-4">
+                    <div className="flex items-start gap-2 sm:gap-3">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0">
+                        <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-secondary" />
                       </div>
                       <div>
-                        <h4 className="font-semibold text-primary">Professional Training</h4>
-                        <p className="text-sm text-gray-600">Certified and extensively trained in security operations</p>
+                        <h4 className="font-semibold text-primary text-sm sm:text-base">Professional Training</h4>
+                        <p className="text-xs sm:text-sm text-gray-600">Certified and extensively trained in security operations</p>
                       </div>
                     </div>
-                    <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0">
-                        <CheckCircle2 className="w-5 h-5 text-secondary" />
+                    <div className="flex items-start gap-2 sm:gap-3">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0">
+                        <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-secondary" />
                       </div>
                       <div>
-                        <h4 className="font-semibold text-primary">24/7 Protection</h4>
-                        <p className="text-sm text-gray-600">Round-the-clock security services for complete peace of mind</p>
+                        <h4 className="font-semibold text-primary text-sm sm:text-base">24/7 Protection</h4>
+                        <p className="text-xs sm:text-sm text-gray-600">Round-the-clock security services for complete peace of mind</p>
                       </div>
                     </div>
-                    <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0">
-                        <CheckCircle2 className="w-5 h-5 text-secondary" />
+                    <div className="flex items-start gap-2 sm:gap-3">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0">
+                        <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-secondary" />
                       </div>
                       <div>
-                        <h4 className="font-semibold text-primary">Battle-Tested Experience</h4>
-                        <p className="text-sm text-gray-600">Years of experience protecting high-profile clients and assets</p>
+                        <h4 className="font-semibold text-primary text-sm sm:text-base">Battle-Tested Experience</h4>
+                        <p className="text-xs sm:text-sm text-gray-600">Years of experience protecting high-profile clients and assets</p>
                       </div>
                     </div>
                   </div>
 
-                  <div className="pt-4">
+                  <div className="pt-2 sm:pt-4">
                     <Link href="/contact">
-                      <Button className="w-full bg-primary hover:bg-primary/90" size="lg">
+                      <Button className="w-full bg-primary hover:bg-primary/90 text-sm sm:text-base" size="lg">
                         <Phone className="mr-2 h-4 w-4" />
-                        Request Elite Security Team
+                        <span className="hidden sm:inline">Request Elite Security Team</span>
+                        <span className="sm:hidden">Request Security Team</span>
                       </Button>
                     </Link>
                   </div>
@@ -278,26 +279,26 @@ export default function HomePage() {
       </Dialog>
 
       {/* Stats Section */}
-      <section className="py-16 bg-gradient-to-b from-gray-50 to-white border-b relative overflow-hidden">
+      <section className="py-10 sm:py-12 md:py-16 bg-gradient-to-b from-gray-50 to-white border-b relative overflow-hidden">
         <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-0 left-0 w-72 h-72 bg-secondary rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-primary rounded-full blur-3xl" />
+          <div className="absolute top-0 left-0 w-48 h-48 sm:w-72 sm:h-72 bg-secondary rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-0 w-64 h-64 sm:w-96 sm:h-96 bg-primary rounded-full blur-3xl" />
         </div>
-        <div className="container relative">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="container relative px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
             {stats.map((stat, index) => (
               <div 
                 key={stat.label} 
-                className="text-center group hover:scale-110 transition-transform duration-300"
+                className="text-center group hover:scale-105 sm:hover:scale-110 transition-transform duration-300"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className="mb-4 inline-flex p-4 rounded-full bg-primary/5 group-hover:bg-primary/10 transition-colors">
-                  <stat.icon className="h-8 w-8 text-primary" />
+                <div className="mb-2 sm:mb-3 md:mb-4 inline-flex p-2 sm:p-3 md:p-4 rounded-full bg-primary/5 group-hover:bg-primary/10 transition-colors">
+                  <stat.icon className="h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8 text-primary" />
                 </div>
-                <div className="text-3xl md:text-5xl font-bold text-primary mb-2 animate-fade-in">
+                <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-1 sm:mb-2 animate-fade-in">
                   {stat.value}
                 </div>
-                <div className="text-sm text-muted-foreground font-medium">{stat.label}</div>
+                <div className="text-xs sm:text-sm text-muted-foreground font-medium px-1">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -305,42 +306,42 @@ export default function HomePage() {
       </section>
 
       {/* Services Section */}
-      <section className="py-20 md:py-28 relative">
-        <div className="container">
-          <div className="text-center mb-16 animate-fade-in">
-            <div className="inline-flex items-center gap-2 mb-4 text-secondary">
-              <Shield className="w-5 h-5" />
-              <span className="text-sm font-semibold uppercase tracking-wider">Our Services</span>
+      <section className="py-12 sm:py-16 md:py-20 lg:py-28 relative">
+        <div className="container px-4">
+          <div className="text-center mb-10 sm:mb-12 md:mb-16 animate-fade-in">
+            <div className="inline-flex items-center gap-2 mb-3 sm:mb-4 text-secondary">
+              <Shield className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider">Our Services</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary-600 bg-clip-text text-transparent">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-primary to-primary-600 bg-clip-text text-transparent px-4">
               Comprehensive Security Solutions
             </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
+            <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
               Tailored to your unique needs with skilled professionals ready around-the-clock to protect what matters most to you.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {services.map((service, index) => (
               <Card
                 key={service.title}
-                className="hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 group border-2 hover:border-secondary/50"
+                className="hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-2 group border-2 hover:border-secondary/50"
                 style={{ animationDelay: `${index * 50}ms` }}
               >
-                <CardContent className="p-6">
-                  <div className="mb-4 inline-flex p-3 rounded-lg bg-accent/10 group-hover:bg-secondary/20 transition-colors">
-                    <CheckCircle2 className="h-8 w-8 text-accent group-hover:text-secondary transition-colors" />
+                <CardContent className="p-4 sm:p-6">
+                  <div className="mb-3 sm:mb-4 inline-flex p-2 sm:p-3 rounded-lg bg-accent/10 group-hover:bg-secondary/20 transition-colors">
+                    <CheckCircle2 className="h-6 w-6 sm:h-8 sm:w-8 text-accent group-hover:text-secondary transition-colors" />
                   </div>
-                  <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
+                  <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 group-hover:text-primary transition-colors">
                     {service.title}
                   </h3>
-                  <p className="text-muted-foreground leading-relaxed">{service.description}</p>
+                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{service.description}</p>
                 </CardContent>
               </Card>
             ))}
           </div>
-          <div className="text-center mt-12">
+          <div className="text-center mt-8 sm:mt-12">
             <Link href="/services">
-              <Button variant="outline" size="lg" className="group hover:bg-primary hover:text-white transition-all">
+              <Button variant="outline" size="lg" className="group hover:bg-primary hover:text-white transition-all text-sm sm:text-base">
                 View All Services
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Button>
@@ -350,33 +351,33 @@ export default function HomePage() {
       </section>
 
       {/* Clients Section */}
-      <section className="py-20 bg-gradient-to-br from-gray-50 via-white to-gray-50 relative overflow-hidden">
+      <section className="py-12 sm:py-16 md:py-20 bg-gradient-to-br from-gray-50 via-white to-gray-50 relative overflow-hidden">
         <div className="absolute inset-0 opacity-5">
-          <Shield className="absolute top-10 left-10 w-64 h-64 text-primary animate-spin-very-slow" />
-          <Shield className="absolute bottom-10 right-10 w-48 h-48 text-secondary animate-spin-very-slow" />
+          <Shield className="hidden md:block absolute top-10 left-10 w-48 h-48 lg:w-64 lg:h-64 text-primary animate-spin-very-slow" />
+          <Shield className="hidden md:block absolute bottom-10 right-10 w-36 h-36 lg:w-48 lg:h-48 text-secondary animate-spin-very-slow" />
         </div>
-        <div className="container relative">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 mb-4 text-secondary">
-              <Award className="w-5 h-5" />
-              <span className="text-sm font-semibold uppercase tracking-wider">Our Clients</span>
+        <div className="container relative px-4">
+          <div className="text-center mb-10 sm:mb-12 md:mb-16">
+            <div className="inline-flex items-center gap-2 mb-3 sm:mb-4 text-secondary">
+              <Award className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider">Our Clients</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 px-4">
               Trusted By Leading Brands
             </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
+            <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
               We are proud to provide security services to some of Pakistan&apos;s
               most renowned companies and organizations.
             </p>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4 md:gap-6">
             {clients.map((client, index) => (
               <div
                 key={client}
-                className="bg-white rounded-xl p-6 text-center shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 border-transparent hover:border-secondary/30 group"
+                className="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 md:p-6 text-center shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 border-transparent hover:border-secondary/30 group"
                 style={{ animationDelay: `${index * 30}ms` }}
               >
-                <span className="font-bold text-gray-700 group-hover:text-primary transition-colors">{client}</span>
+                <span className="text-xs sm:text-sm md:text-base font-bold text-gray-700 group-hover:text-primary transition-colors">{client}</span>
               </div>
             ))}
           </div>
@@ -384,49 +385,49 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 md:py-28 bg-gradient-to-br from-primary via-primary-600 to-primary-800 text-white relative overflow-hidden">
+      <section className="py-12 sm:py-16 md:py-20 lg:py-28 bg-gradient-to-br from-primary via-primary-600 to-primary-800 text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
           }} />
         </div>
-        <div className="container text-center relative">
+        <div className="container text-center relative px-4">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">
               Ready to Secure Your Business?
             </h2>
-            <p className="text-xl text-gray-200 mb-10 leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl text-gray-200 mb-8 sm:mb-10 leading-relaxed">
               Contact us today for a free consultation. Our security experts will
               assess your needs and provide a customized solution tailored to your specific requirements.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/contact">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+              <Link href="/contact" className="w-full sm:w-auto">
                 <Button
                   size="lg"
-                  className="bg-secondary text-secondary-foreground hover:bg-secondary/90 hover:scale-105 transition-all shadow-2xl text-lg px-8"
+                  className="w-full sm:w-auto bg-secondary text-secondary-foreground hover:bg-secondary/90 hover:scale-105 transition-all shadow-2xl text-sm sm:text-base md:text-lg px-6 sm:px-8"
                 >
                   Contact Us
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
               </Link>
-              <a href="tel:03018689990">
+              <a href="tel:03018689990" className="w-full sm:w-auto">
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-2 border-white text-white hover:bg-white hover:text-primary transition-all shadow-xl text-lg px-8"
+                  className="w-full sm:w-auto border-2 border-white text-white hover:bg-white hover:text-primary transition-all shadow-xl text-sm sm:text-base md:text-lg px-6 sm:px-8"
                 >
-                  <Phone className="mr-2 h-5 w-5" />
+                  <Phone className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                   Call Now
                 </Button>
               </a>
             </div>
           </div>
         </div>
-        <div className="absolute top-10 left-10 opacity-20">
-          <Shield className="w-24 h-24 text-secondary animate-float" />
+        <div className="hidden md:block absolute top-10 left-10 opacity-20">
+          <Shield className="w-16 h-16 lg:w-24 lg:h-24 text-secondary animate-float" />
         </div>
-        <div className="absolute bottom-10 right-10 opacity-20">
-          <Shield className="w-32 h-32 text-secondary animate-float-delayed" />
+        <div className="hidden md:block absolute bottom-10 right-10 opacity-20">
+          <Shield className="w-20 h-20 lg:w-32 lg:h-32 text-secondary animate-float-delayed" />
         </div>
       </section>
     </div>
