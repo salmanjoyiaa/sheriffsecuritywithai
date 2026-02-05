@@ -354,6 +354,14 @@ interface PlaceReportData {
     start: string;
     end: string;
   };
+  inventory: Array<{
+    id: string;
+    item_name: string;
+    serial_number: string | null;
+    quantity: number;
+    assigned_at: string;
+    assigned_to_guard: string | null;
+  }>;
 }
 
 interface PlaceReportPDFProps {
@@ -495,6 +503,54 @@ export function PlaceReportPDF({ data }: PlaceReportPDFProps) {
           ) : (
             <Text style={{ color: "#666666", textAlign: "center", padding: 20 }}>
               No guards currently assigned to this place
+            </Text>
+          )}
+        </View>
+
+        {/* Assigned Inventory */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>
+            Assigned Inventory ({data.inventory.length})
+          </Text>
+          {data.inventory.length > 0 ? (
+            <View style={styles.table}>
+              <View style={styles.tableHeader}>
+                <Text style={[styles.tableHeaderText, { width: "30%" }]}>
+                  Item Name
+                </Text>
+                <Text style={[styles.tableHeaderText, { width: "20%" }]}>
+                  Serial Number
+                </Text>
+                <Text style={[styles.tableHeaderText, { width: "15%" }]}>
+                  Quantity
+                </Text>
+                <Text style={[styles.tableHeaderText, { width: "35%" }]}>
+                  Assigned Date
+                </Text>
+              </View>
+              {data.inventory.map((item, idx) => (
+                <View
+                  key={idx}
+                  style={idx % 2 === 0 ? styles.tableRow : styles.tableRowAlt}
+                >
+                  <Text style={[styles.tableCell, { width: "30%" }]}>
+                    {item.item_name}
+                  </Text>
+                  <Text style={[styles.tableCell, { width: "20%" }]}>
+                    {item.serial_number || "-"}
+                  </Text>
+                  <Text style={[styles.tableCell, { width: "15%" }]}>
+                    {item.quantity}
+                  </Text>
+                  <Text style={[styles.tableCell, { width: "35%" }]}>
+                    {formatDate(item.assigned_at)}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          ) : (
+            <Text style={{ color: "#666666", textAlign: "center", padding: 20 }}>
+              No inventory currently assigned to this place
             </Text>
           )}
         </View>

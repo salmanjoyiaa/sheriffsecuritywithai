@@ -52,6 +52,14 @@ export function PlaceReportExportButton({
           start: startDate,
           end: endDate,
         },
+        inventory: reportData.inventory.map((item) => ({
+          id: item.id,
+          item_name: item.item_name,
+          serial_number: item.serial_number,
+          quantity: item.quantity,
+          assigned_at: item.assigned_at,
+          assigned_to_guard: item.assigned_to_guard,
+        })),
       };
 
       // Generate PDF blob
