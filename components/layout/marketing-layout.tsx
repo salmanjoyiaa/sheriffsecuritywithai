@@ -53,15 +53,15 @@ export function MarketingNavbar() {
           </Link>
         </nav>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center gap-2 sm:space-x-4">
           <Link href="/login">
-            <Button variant="outline" className="hidden sm:flex">
+            <Button variant="outline" className="flex text-xs px-3 h-9 sm:text-sm sm:px-4 sm:h-10">
               Login
             </Button>
           </Link>
           <a href="tel:03018689990">
-            <Button className="bg-primary hover:bg-primary-700">
-              <Phone className="mr-2 h-4 w-4" />
+            <Button className="bg-primary hover:bg-primary-700 h-9 w-9 p-0 sm:h-auto sm:w-auto sm:px-4 sm:py-2">
+              <Phone className="h-4 w-4 sm:mr-2" />
               <span className="hidden sm:inline">Call Now</span>
             </Button>
           </a>
