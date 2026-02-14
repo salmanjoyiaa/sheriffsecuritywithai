@@ -84,6 +84,22 @@ export function HeroVoiceAgent() {
         };
     }, [state, stopListening]);
 
+    // Listen for custom event from TalkToUsSection
+    useEffect(() => {
+        const handleOpenVoiceAgent = async () => {
+            if (state === "idle") {
+                setIsModalOpen(true);
+                await startListening();
+            } else {
+                setIsModalOpen(true);
+            }
+        };
+        window.addEventListener("open-voice-agent", handleOpenVoiceAgent);
+        return () => {
+            window.removeEventListener("open-voice-agent", handleOpenVoiceAgent);
+        };
+    }, [state, startListening]);
+
     const handleMicPress = useCallback(async () => {
         if (state === "listening") {
             stopListening();

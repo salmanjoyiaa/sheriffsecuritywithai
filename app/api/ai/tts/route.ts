@@ -32,9 +32,10 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        // Forward text to Deepgram Aura-2 TTS (Andromeda — warm female voice)
+        // Stream TTS from Deepgram Aura-2 Helena (clear female voice)
+        // Using linear16 PCM at 24kHz for low-latency chunked streaming
         const response = await fetch(
-            "https://api.deepgram.com/v1/speak?model=aura-2-andromeda-en",
+            "https://api.deepgram.com/v1/speak?model=aura-2-helena-en&encoding=linear16&sample_rate=24000",
             {
                 method: "POST",
                 headers: {
@@ -54,14 +55,23 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        // Stream the audio response back
-        const audioBuffer = await response.arrayBuffer();
+        // Pipe Deepgram's response body directly — client receives audio chunks
+        // as they are generated (streaming) instead of waiting for full download
+        if (!response.body) {
+            return NextResponse.json(
+                { error: "No audio stream from TTS" },
+                { status: 500 }
+            );
+        }
 
-        return new NextResponse(audioBuffer, {
+        return new NextResponse(response.body as ReadableStream, {
             status: 200,
             headers: {
-                "Content-Type": "audio/mpeg",
-                "Content-Length": audioBuffer.byteLength.toString(),
+                "Content-Type": "audio/pcm",
+                "X-Sample-Rate": "24000",
+                "X-Channels": "1",
+                "X-Bit-Depth": "16",
+                "Cache-Control": "no-cache",
             },
         });
     } catch (error) {

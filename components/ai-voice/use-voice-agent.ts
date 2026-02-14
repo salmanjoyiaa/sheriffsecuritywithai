@@ -73,8 +73,9 @@ export function useVoiceAgent(): UseVoiceAgentReturn {
     const audioChunksRef = useRef<Blob[]>([]);
     const streamRef = useRef<MediaStream | null>(null);
     const audioContextRef = useRef<AudioContext | null>(null);
-    const currentAudioRef = useRef<HTMLAudioElement | null>(null);
+    const currentSourcesRef = useRef<AudioBufferSourceNode[]>([]);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
+    const ttsAbortRef = useRef<AbortController | null>(null);
 
     // Cleanup on unmount
     useEffect(() => {
@@ -101,11 +102,16 @@ export function useVoiceAgent(): UseVoiceAgentReturn {
             streamRef.current.getTracks().forEach((track) => track.stop());
             streamRef.current = null;
         }
-        // Stop audio playback
-        if (currentAudioRef.current) {
-            currentAudioRef.current.pause();
-            currentAudioRef.current = null;
+        // Abort any in-flight TTS fetch
+        if (ttsAbortRef.current) {
+            ttsAbortRef.current.abort();
+            ttsAbortRef.current = null;
         }
+        // Stop all scheduled audio buffer sources
+        currentSourcesRef.current.forEach((src) => {
+            try { src.stop(); } catch { /* already stopped */ }
+        });
+        currentSourcesRef.current = [];
         // Clear timer
         if (timerRef.current) {
             clearTimeout(timerRef.current);
@@ -124,54 +130,115 @@ export function useVoiceAgent(): UseVoiceAgentReturn {
                 setState("speaking");
                 setIsSpeaking(true);
 
+                const abortController = new AbortController();
+                ttsAbortRef.current = abortController;
+
                 const ttsRes = await fetch("/api/ai/tts", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ text }),
+                    signal: abortController.signal,
                 });
 
                 if (!ttsRes.ok) {
                     throw new Error("TTS request failed");
                 }
 
-                const audioBlob = await ttsRes.blob();
-                const audioUrl = URL.createObjectURL(audioBlob);
-                const audio = new Audio(audioUrl);
-                currentAudioRef.current = audio;
+                const reader = ttsRes.body?.getReader();
+                if (!reader) throw new Error("No stream body");
 
+                const sampleRate = parseInt(ttsRes.headers.get("X-Sample-Rate") || "24000", 10);
                 const audioCtx = getAudioContext();
                 if (audioCtx.state === "suspended") {
                     await audioCtx.resume();
                 }
-                const source = audioCtx.createMediaElementSource(audio);
+
+                // Create a shared analyser for VoiceOrb visualization
                 const analyser = audioCtx.createAnalyser();
                 analyser.fftSize = 256;
-                source.connect(analyser);
                 analyser.connect(audioCtx.destination);
                 setAnalyserNode(analyser);
 
-                audio.addEventListener("loadedmetadata", () => {
-                    setAudioDuration(audio.duration);
-                });
+                // Read all chunks from the stream, schedule audio playback as chunks arrive
+                let nextStartTime = audioCtx.currentTime;
+                let totalDuration = 0;
+                const sources: AudioBufferSourceNode[] = [];
+                // Buffer to handle partial samples across chunks
+                let leftoverBytes = new Uint8Array(0);
 
-                audio.addEventListener("ended", () => {
+                const processChunk = (chunk: Uint8Array): void => {
+                    // Combine leftover bytes from previous chunk
+                    const combined = new Uint8Array(leftoverBytes.length + chunk.length);
+                    combined.set(leftoverBytes, 0);
+                    combined.set(chunk, leftoverBytes.length);
+
+                    // Each sample is 2 bytes (16-bit PCM), so we need even byte count
+                    const usableBytes = combined.length - (combined.length % 2);
+                    leftoverBytes = combined.slice(usableBytes);
+
+                    if (usableBytes === 0) return;
+
+                    const int16View = new Int16Array(combined.buffer.slice(0, usableBytes));
+                    const numSamples = int16View.length;
+
+                    // Convert Int16 PCM to Float32
+                    const audioBuffer = audioCtx.createBuffer(1, numSamples, sampleRate);
+                    const channelData = audioBuffer.getChannelData(0);
+                    for (let i = 0; i < numSamples; i++) {
+                        channelData[i] = int16View[i] / 32768;
+                    }
+
+                    const source = audioCtx.createBufferSource();
+                    source.buffer = audioBuffer;
+                    source.connect(analyser);
+                    source.start(nextStartTime);
+                    sources.push(source);
+
+                    const chunkDuration = numSamples / sampleRate;
+                    nextStartTime += chunkDuration;
+                    totalDuration += chunkDuration;
+                };
+
+                // Read the stream
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    if (value && value.length > 0) {
+                        processChunk(value);
+                    }
+                }
+
+                // Process any leftover bytes (pad with zero if odd)
+                if (leftoverBytes.length > 0) {
+                    const padded = new Uint8Array(leftoverBytes.length + (leftoverBytes.length % 2));
+                    padded.set(leftoverBytes);
+                    processChunk(padded);
+                }
+
+                currentSourcesRef.current = sources;
+                setAudioDuration(totalDuration);
+
+                // When the last source finishes, reset state
+                if (sources.length > 0) {
+                    const lastSource = sources[sources.length - 1];
+                    lastSource.onended = () => {
+                        setState("idle");
+                        setIsSpeaking(false);
+                        setAnalyserNode(null);
+                        currentSourcesRef.current = [];
+                        ttsAbortRef.current = null;
+                    };
+                } else {
                     setState("idle");
                     setIsSpeaking(false);
                     setAnalyserNode(null);
-                    currentAudioRef.current = null;
-                    URL.revokeObjectURL(audioUrl);
-                });
-
-                audio.addEventListener("error", () => {
-                    setState("idle");
-                    setIsSpeaking(false);
-                    setAnalyserNode(null);
-                    currentAudioRef.current = null;
-                    URL.revokeObjectURL(audioUrl);
-                });
-
-                await audio.play();
+                    ttsAbortRef.current = null;
+                }
             } catch (err) {
+                if (err instanceof DOMException && err.name === "AbortError") {
+                    // TTS was cancelled — ignore
+                    return;
+                }
                 console.error("TTS playback error:", err);
                 setState("idle");
                 setIsSpeaking(false);

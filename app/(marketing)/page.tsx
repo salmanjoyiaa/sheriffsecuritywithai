@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { HeroVoiceAgent } from "@/components/ai-voice/hero-voice-agent";
+import { TalkToUsSection } from "@/components/ai-voice/talk-to-us-section";
 
 const stats = [
   { label: "Years of Experience", value: "20+", icon: Award },
@@ -284,6 +285,9 @@ export default function HomePage() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Talk to Us Right Now — AI Voice CTA Section */}
+      <TalkToUsSection />
 
       {/* Stats Section */}
       <section className="py-10 sm:py-12 md:py-16 bg-gradient-to-b from-gray-50 to-white border-b relative overflow-hidden">
