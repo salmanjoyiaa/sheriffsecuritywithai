@@ -61,9 +61,16 @@ export default function AIMonitorPage() {
     const [selectedRequest, setSelectedRequest] = useState<ServiceRequest | null>(null);
     const [autoRefresh, setAutoRefresh] = useState(true);
     const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
+    const [accessDenied, setAccessDenied] = useState(false);
 
     const fetchData = useCallback(async () => {
         const supabase = createClient();
+
+        // Check if user is super_admin
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) { setAccessDenied(true); setLoading(false); return; }
+        const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+        if (!profile || profile.role !== "super_admin") { setAccessDenied(true); setLoading(false); return; }
 
         const { data, error } = await supabase
             .from("service_requests")
@@ -111,6 +118,18 @@ export default function AIMonitorPage() {
             if (interval) clearInterval(interval);
         };
     }, [fetchData, autoRefresh]);
+
+    if (accessDenied) {
+        return (
+            <div className="flex items-center justify-center h-[60vh]">
+                <div className="text-center space-y-3">
+                    <Shield className="h-16 w-16 text-muted-foreground mx-auto" />
+                    <h2 className="text-2xl font-bold">Access Denied</h2>
+                    <p className="text-muted-foreground">Only super admins can access the AI Monitor.</p>
+                </div>
+            </div>
+        );
+    }
 
     const getStatusColor = (status: string) => {
         switch (status) {

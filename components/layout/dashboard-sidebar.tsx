@@ -40,7 +40,7 @@ import { Logo } from "@/components/ui/logo";
 const navigation = [
   { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
   { name: "Leads", href: "/dashboard/leads", icon: UserPlus },
-  { name: "AI Monitor", href: "/dashboard/leads/monitoring", icon: Activity },
+  { name: "AI Monitor", href: "/dashboard/leads/monitoring", icon: Activity, superAdminOnly: true },
   { name: "Branches", href: "/dashboard/branches", icon: Building2, superAdminOnly: true },
   { name: "Places", href: "/dashboard/places", icon: MapPin },
   { name: "Guards", href: "/dashboard/guards", icon: Users },
