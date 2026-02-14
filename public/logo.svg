@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <!-- Shield body -->
+  <path d="M100 10 L180 50 L180 110 C180 155 145 185 100 195 C55 185 20 155 20 110 L20 50 Z" fill="#8B1A1A" stroke="#6B0F0F" stroke-width="3"/>
+  <!-- Inner shield highlight -->
+  <path d="M100 24 L168 58 L168 112 C168 148 138 174 100 183 C62 174 32 148 32 112 L32 58 Z" fill="#A02020"/>
+  <!-- Gold border ring -->
+  <path d="M100 34 L158 64 L158 112 C158 142 132 166 100 174 C68 166 42 142 42 112 L42 64 Z" fill="none" stroke="#FFD700" stroke-width="2.5"/>
+  <!-- Inner dark area -->
+  <path d="M100 40 L152 67 L152 112 C152 138 128 160 100 168 C72 160 48 138 48 112 L48 67 Z" fill="#7A1515"/>
+  <!-- Star (sheriff badge style) -->
+  <polygon points="100,55 108,80 135,80 114,95 122,120 100,105 78,120 86,95 65,80 92,80" fill="#FFD700" stroke="#D4A500" stroke-width="1"/>
+  <!-- Inner star circle -->
+  <circle cx="100" cy="90" r="14" fill="#8B1A1A" stroke="#FFD700" stroke-width="1.5"/>
+  <!-- S letter in center -->
+  <text x="100" y="96" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#FFD700">S</text>
+  <!-- Bottom banner ribbon -->
+  <path d="M40 140 L60 132 L140 132 L160 140 L150 148 L50 148 Z" fill="#FFD700" stroke="#D4A500" stroke-width="1"/>
+  <text x="100" y="144" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#8B1A1A" letter-spacing="2">SHERIFF</text>
+</svg>

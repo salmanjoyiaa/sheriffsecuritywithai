@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { DashboardSidebar } from "@/components/layout/dashboard-sidebar";
+import { DashboardVoiceAgent } from "@/components/ai-voice/dashboard-voice-agent";
 import type { ProfileWithBranch } from "@/lib/supabase/types";
 
 export default async function DashboardLayout({
@@ -42,6 +43,7 @@ export default async function DashboardLayout({
           {children}
         </div>
       </main>
+      <DashboardVoiceAgent />
     </div>
   );
 }

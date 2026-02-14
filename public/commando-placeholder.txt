@@ -1,4 +1,0 @@
-/* 
- * Save your commando photo here as 'commando.jpg'
- * The photo should be optimized for web (recommended: 800x1000px, < 200KB)
- */

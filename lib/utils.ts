@@ -96,7 +96,15 @@ export const INVENTORY_CATEGORIES = [
 ] as const;
 export type InventoryCategory = (typeof INVENTORY_CATEGORIES)[number];
 
-export const INVOICE_STATUSES = ["unpaid", "paid", "partial"] as const;
+export const INVOICE_STATUSES = [
+  "draft",
+  "sent",
+  "paid",
+  "partial",
+  "unpaid",
+  "overdue",
+  "cancelled",
+] as const;
 export type InvoiceStatus = (typeof INVOICE_STATUSES)[number];
 
 export const USER_ROLES = ["super_admin", "branch_admin"] as const;

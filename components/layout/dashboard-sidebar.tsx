@@ -30,12 +30,15 @@ import {
   Menu,
   X,
   ChevronDown,
+  UserPlus,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import type { ProfileWithBranch } from "@/lib/supabase/types";
+import { Logo } from "@/components/ui/logo";
 
 const navigation = [
   { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
+  { name: "Leads", href: "/dashboard/leads", icon: UserPlus },
   { name: "Branches", href: "/dashboard/branches", icon: Building2, superAdminOnly: true },
   { name: "Places", href: "/dashboard/places", icon: MapPin },
   { name: "Guards", href: "/dashboard/guards", icon: Users },
@@ -95,7 +98,7 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="flex items-center space-x-2 px-4 py-5 border-b">
-            <Shield className="h-8 w-8 text-primary fill-secondary stroke-primary" />
+            <Logo size={32} />
             <div>
               <h1 className="font-bold text-primary">Sheriff Security</h1>
               <p className="text-xs text-muted-foreground">Dashboard</p>
@@ -106,7 +109,7 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
           <nav className="flex-1 overflow-y-auto py-4 px-3">
             <ul className="space-y-1">
               {filteredNav.map((item) => {
-                const isActive = pathname === item.href || 
+                const isActive = pathname === item.href ||
                   (item.href !== "/dashboard" && pathname.startsWith(item.href));
                 return (
                   <li key={item.name}>

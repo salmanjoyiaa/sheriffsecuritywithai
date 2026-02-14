@@ -1,15 +1,27 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
-import { Shield, Phone, Mail, MapPin, Menu, X } from "lucide-react";
+import { Phone, Mail, MapPin, Menu, X, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/ui/logo";
+
+const navLinks = [
+  { href: "/", label: "Home" },
+  { href: "/services", label: "Services" },
+  { href: "/projects", label: "Projects" },
+  { href: "/branches", label: "Branches" },
+  { href: "/contact", label: "Contact" },
+];
 
 export function MarketingNavbar() {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
       <div className="container flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center space-x-2">
-          <div className="relative h-10 w-10">
-            <Shield className="h-10 w-10 text-primary fill-secondary stroke-primary" />
-          </div>
+          <Logo size={40} />
           <div className="flex flex-col">
             <span className="text-lg font-bold text-primary leading-tight">
               Sheriff Security
@@ -21,36 +33,15 @@ export function MarketingNavbar() {
         </Link>
 
         <nav className="hidden md:flex items-center space-x-6">
-          <Link
-            href="/"
-            className="text-sm font-medium text-foreground hover:text-primary transition-colors"
-          >
-            Home
-          </Link>
-          <Link
-            href="/services"
-            className="text-sm font-medium text-foreground hover:text-primary transition-colors"
-          >
-            Services
-          </Link>
-          <Link
-            href="/projects"
-            className="text-sm font-medium text-foreground hover:text-primary transition-colors"
-          >
-            Projects
-          </Link>
-          <Link
-            href="/branches"
-            className="text-sm font-medium text-foreground hover:text-primary transition-colors"
-          >
-            Branches
-          </Link>
-          <Link
-            href="/contact"
-            className="text-sm font-medium text-foreground hover:text-primary transition-colors"
-          >
-            Contact
-          </Link>
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="text-sm font-medium text-foreground hover:text-primary transition-colors"
+            >
+              {link.label}
+            </Link>
+          ))}
         </nav>
 
         <div className="flex items-center gap-2 sm:space-x-4">
@@ -59,14 +50,47 @@ export function MarketingNavbar() {
               Login
             </Button>
           </Link>
-          <a href="tel:03018689990">
+          <a href="tel:03018689990" className="hidden sm:inline-flex">
             <Button className="bg-primary hover:bg-primary-700 h-9 w-9 p-0 sm:h-auto sm:w-auto sm:px-4 sm:py-2">
               <Phone className="h-4 w-4 sm:mr-2" />
               <span className="hidden sm:inline">Call Now</span>
             </Button>
           </a>
+          {/* Mobile hamburger */}
+          <button
+            className="md:hidden p-2 rounded-md hover:bg-gray-100 transition-colors"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label="Toggle menu"
+          >
+            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile menu drawer */}
+      {mobileOpen && (
+        <div className="md:hidden border-t bg-white animate-fade-in">
+          <nav className="container py-4 flex flex-col space-y-1">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMobileOpen(false)}
+                className="text-sm font-medium text-foreground hover:text-primary hover:bg-gray-50 transition-colors px-3 py-2.5 rounded-md"
+              >
+                {link.label}
+              </Link>
+            ))}
+            <a
+              href="tel:03018689990"
+              className="flex items-center gap-2 text-sm font-medium text-primary px-3 py-2.5"
+            >
+              <Phone className="h-4 w-4" />
+              03018689990
+            </a>
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
@@ -79,7 +103,7 @@ export function MarketingFooter() {
           {/* Company Info */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <Shield className="h-8 w-8 text-secondary fill-secondary/20" />
+              <Logo size={32} />
               <div>
                 <h3 className="font-bold text-white">Sheriff Security</h3>
                 <p className="text-xs text-gray-400">Since 2004</p>

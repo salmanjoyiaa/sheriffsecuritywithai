@@ -18,6 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { HeroVoiceAgent } from "@/components/ai-voice/hero-voice-agent";
 
 const stats = [
   { label: "Years of Experience", value: "20+", icon: Award },
@@ -88,7 +89,7 @@ export default function HomePage() {
           }} />
         </div>
         <div className="absolute inset-0 bg-black/20" />
-        
+
         <div className="container relative px-4 py-12 sm:py-16 md:py-20 lg:py-32">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
             {/* Left Content */}
@@ -135,12 +136,12 @@ export default function HomePage() {
               <div className="relative group cursor-pointer" onClick={() => setShowCommando(true)}>
                 {/* Glowing Ring Animation */}
                 <div className="absolute inset-0 rounded-full bg-gradient-to-r from-red-600 via-red-500 to-red-600 opacity-75 blur-xl sm:blur-2xl group-hover:opacity-100 transition-opacity duration-500 animate-pulse-slow" />
-                
+
                 {/* Avatar Container */}
                 <div className="relative">
                   {/* Rotating Border */}
                   <div className="absolute -inset-2 sm:-inset-4 rounded-full bg-gradient-to-r from-red-600 via-red-500 to-red-600 opacity-75 blur-sm sm:blur-md group-hover:opacity-100 group-hover:blur-xl transition-all duration-500 animate-spin-slow" />
-                  
+
                   {/* Main Avatar */}
                   <div className="relative w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden border-4 sm:border-6 md:border-8 border-white shadow-2xl transform group-hover:scale-105 transition-transform duration-500">
                     <div className="absolute inset-0 bg-gradient-to-br from-primary-600 to-primary-900" />
@@ -293,8 +294,8 @@ export default function HomePage() {
         <div className="container relative px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
             {stats.map((stat, index) => (
-              <div 
-                key={stat.label} 
+              <div
+                key={stat.label}
                 className="text-center group hover:scale-105 sm:hover:scale-110 transition-transform duration-300"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
@@ -446,6 +447,9 @@ export default function HomePage() {
           <Shield className="w-20 h-20 lg:w-32 lg:h-32 text-secondary animate-float-delayed" />
         </div>
       </section>
+
+      {/* AI Voice Agent — Floating Mic */}
+      <HeroVoiceAgent />
     </div>
   );
 }

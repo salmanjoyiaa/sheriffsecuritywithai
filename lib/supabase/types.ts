@@ -654,6 +654,175 @@ export type Database = {
         };
         Relationships: [];
       };
+      service_packages: {
+        Row: {
+          id: string;
+          name: string;
+          description: string | null;
+          category: "event" | "residential" | "commercial" | "patrol" | "vip";
+          base_rate: number;
+          currency: string;
+          min_guards: number;
+          max_guards: number;
+          includes: string[] | null;
+          available_addons: string[] | null;
+          image_url: string | null;
+          is_active: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          description?: string | null;
+          category: "event" | "residential" | "commercial" | "patrol" | "vip";
+          base_rate: number;
+          currency?: string;
+          min_guards?: number;
+          max_guards?: number;
+          includes?: string[] | null;
+          available_addons?: string[] | null;
+          image_url?: string | null;
+          is_active?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          description?: string | null;
+          category?: "event" | "residential" | "commercial" | "patrol" | "vip";
+          base_rate?: number;
+          currency?: string;
+          min_guards?: number;
+          max_guards?: number;
+          includes?: string[] | null;
+          available_addons?: string[] | null;
+          image_url?: string | null;
+          is_active?: boolean;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      service_requests: {
+        Row: {
+          id: string;
+          request_number: string | null;
+          branch_id: string | null;
+          customer_name: string;
+          customer_email: string;
+          customer_phone: string | null;
+          company_name: string | null;
+          service_type: "event" | "residential" | "commercial" | "patrol" | "vip";
+          location_address: string;
+          location_city: string | null;
+          location_state: string | null;
+          num_guards: number;
+          duration_hours: number | null;
+          start_date: string | null;
+          start_time: string | null;
+          end_date: string | null;
+          special_requirements: string[] | null;
+          additional_notes: string | null;
+          package_id: string | null;
+          hourly_rate: number | null;
+          estimated_total: number | null;
+          currency: string;
+          status: "new" | "confirmed" | "assigned" | "active" | "completed" | "cancelled";
+          priority: "low" | "normal" | "high" | "urgent";
+          source: "ai_voice" | "ai_chat" | "web_form" | "phone" | "email";
+          ai_transcript: string | null;
+          ai_confidence_score: number | null;
+          created_at: string;
+          updated_at: string;
+          confirmed_at: string | null;
+          invoice_sent_to_customer: boolean;
+          invoice_sent_to_owner: boolean;
+          invoice_sent_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          request_number?: string | null;
+          branch_id?: string | null;
+          customer_name: string;
+          customer_email: string;
+          customer_phone?: string | null;
+          company_name?: string | null;
+          service_type: "event" | "residential" | "commercial" | "patrol" | "vip";
+          location_address: string;
+          location_city?: string | null;
+          location_state?: string | null;
+          num_guards?: number;
+          duration_hours?: number | null;
+          start_date?: string | null;
+          start_time?: string | null;
+          end_date?: string | null;
+          special_requirements?: string[] | null;
+          additional_notes?: string | null;
+          package_id?: string | null;
+          hourly_rate?: number | null;
+          estimated_total?: number | null;
+          currency?: string;
+          status?: "new" | "confirmed" | "assigned" | "active" | "completed" | "cancelled";
+          priority?: "low" | "normal" | "high" | "urgent";
+          source?: "ai_voice" | "ai_chat" | "web_form" | "phone" | "email";
+          ai_transcript?: string | null;
+          ai_confidence_score?: number | null;
+          created_at?: string;
+          updated_at?: string;
+          confirmed_at?: string | null;
+          invoice_sent_to_customer?: boolean;
+          invoice_sent_to_owner?: boolean;
+          invoice_sent_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          request_number?: string | null;
+          branch_id?: string | null;
+          customer_name?: string;
+          customer_email?: string;
+          customer_phone?: string | null;
+          company_name?: string | null;
+          service_type?: "event" | "residential" | "commercial" | "patrol" | "vip";
+          location_address?: string;
+          location_city?: string | null;
+          location_state?: string | null;
+          num_guards?: number;
+          duration_hours?: number | null;
+          start_date?: string | null;
+          start_time?: string | null;
+          end_date?: string | null;
+          special_requirements?: string[] | null;
+          additional_notes?: string | null;
+          package_id?: string | null;
+          hourly_rate?: number | null;
+          estimated_total?: number | null;
+          currency?: string;
+          status?: "new" | "confirmed" | "assigned" | "active" | "completed" | "cancelled";
+          priority?: "low" | "normal" | "high" | "urgent";
+          source?: "ai_voice" | "ai_chat" | "web_form" | "phone" | "email";
+          ai_transcript?: string | null;
+          ai_confidence_score?: number | null;
+          created_at?: string;
+          updated_at?: string;
+          confirmed_at?: string | null;
+          invoice_sent_to_customer?: boolean;
+          invoice_sent_to_owner?: boolean;
+          invoice_sent_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "service_requests_branch_id_fkey";
+            columns: ["branch_id"];
+            referencedRelation: "branches";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "service_requests_package_id_fkey";
+            columns: ["package_id"];
+            referencedRelation: "service_packages";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -723,6 +892,8 @@ export type Invoice = Tables<"invoices">;
 export type InvoiceLineItem = Tables<"invoice_line_items">;
 export type Inquiry = Tables<"inquiries">;
 export type CompanySettings = Tables<"company_settings">;
+export type ServicePackage = Tables<"service_packages">;
+export type ServiceRequest = Tables<"service_requests">;
 
 // Extended types with relations
 export type AssignmentWithRelations = Assignment & {

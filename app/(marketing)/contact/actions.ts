@@ -9,7 +9,7 @@ export async function submitInquiry(data: InquiryFormData) {
     const validated = inquirySchema.parse(data);
 
     // Use admin client to bypass RLS for public form
-    const supabase = await createAdminClient();
+    const supabase = createAdminClient();
 
     const { error } = await supabase.from("inquiries").insert({
       name: validated.name,

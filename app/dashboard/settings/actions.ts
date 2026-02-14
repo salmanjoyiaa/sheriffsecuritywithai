@@ -262,7 +262,7 @@ export async function getUserProfile(): Promise<{
       full_name: profile.full_name,
       role: profile.role,
       branch_id: profile.branch_id,
-      branch_name: (profile.branches as any)?.name || null,
+      branch_name: (profile.branches as { name: string } | null)?.name || null,
       created_at: profile.created_at,
     },
   };

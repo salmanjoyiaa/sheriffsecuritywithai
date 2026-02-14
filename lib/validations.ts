@@ -114,11 +114,10 @@ export const inventoryItemSchema = z.object({
   branch_id: z.string().uuid("Invalid branch"),
   name: z.string().min(2, "Item name is required"),
   category: z.enum([
-    "Uniform",
     "Equipment",
+    "Safety Gear",
     "Communication",
     "Weapon",
-    "Safety Gear",
     "Other",
   ]),
   tracking_type: z.enum(["quantity", "serialised"]),
