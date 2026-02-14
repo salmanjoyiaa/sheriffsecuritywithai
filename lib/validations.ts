@@ -11,6 +11,8 @@ export const branchSchema = z.object({
   city: z.string().min(2, "City is required"),
   address: z.string().min(5, "Address must be at least 5 characters"),
   phone: z.string().regex(phoneRegex, "Invalid phone number format"),
+  admin_email: z.string().email("Valid email required for branch admin").optional(),
+  admin_password: z.string().min(6, "Password must be at least 6 characters").optional(),
 });
 export type BranchFormData = z.infer<typeof branchSchema>;
 

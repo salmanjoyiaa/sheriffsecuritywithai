@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import { useDashboardVoice } from "./use-dashboard-voice";
 import { VoiceOrb } from "./voice-orb";
 import { VoiceSubtitles } from "./voice-subtitles";
@@ -16,7 +16,87 @@ import {
     ChevronUp,
     ChevronDown,
     MessageSquare,
+    Download,
+    FileText,
 } from "lucide-react";
+import type { ReportResult } from "@/lib/ai/manager-prompts";
+
+function ReportDownloadButton({ report, onDone }: { report: ReportResult; onDone: () => void }) {
+    const [isGenerating, setIsGenerating] = useState(false);
+
+    const handleDownload = useCallback(async () => {
+        setIsGenerating(true);
+        try {
+            // Dynamic import to keep the bundle small
+            const { pdf } = await import("@react-pdf/renderer");
+            const { AttendanceReportPDF, PlaceReportPDF, MonthlySummaryPDF } = await import("@/components/pdf/report-pdf");
+
+            let blob: Blob;
+            let filename: string;
+
+            if (report.reportType === "guard_attendance") {
+                const element = React.createElement(AttendanceReportPDF, {
+                    data: report.data as any,
+                    period: report.period,
+                });
+                blob = await pdf(element as any).toBlob();
+                filename = `guard-attendance-${report.period.start}-to-${report.period.end}.pdf`;
+            } else if (report.reportType === "place") {
+                const element = React.createElement(PlaceReportPDF, { data: report.data as any });
+                blob = await pdf(element as any).toBlob();
+                const placeName = ((report.data as any)?.place?.name || "place").replace(/\s+/g, "-").toLowerCase();
+                filename = `place-report-${placeName}-${report.period.start}.pdf`;
+            } else {
+                const element = React.createElement(MonthlySummaryPDF, { data: report.data as any });
+                blob = await pdf(element as any).toBlob();
+                filename = `monthly-summary-${report.period.start}.pdf`;
+            }
+
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            onDone();
+        } catch (err) {
+            console.error("PDF generation error:", err);
+        } finally {
+            setIsGenerating(false);
+        }
+    }, [report, onDone]);
+
+    return (
+        <div className="mx-4 mb-3 bg-emerald-50 border border-emerald-200 rounded-xl p-3">
+            <div className="flex items-center gap-2 mb-2">
+                <FileText className="h-4 w-4 text-emerald-600" />
+                <p className="text-sm font-medium text-emerald-800">{report.label}</p>
+            </div>
+            <p className="text-xs text-emerald-600 mb-2">
+                {report.period.start} to {report.period.end}
+            </p>
+            <button
+                onClick={handleDownload}
+                disabled={isGenerating}
+                className="w-full flex items-center justify-center gap-2 py-2.5 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors min-h-[44px] disabled:opacity-60"
+            >
+                {isGenerating ? (
+                    <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Generating PDF…
+                    </>
+                ) : (
+                    <>
+                        <Download className="h-4 w-4" />
+                        Download PDF
+                    </>
+                )}
+            </button>
+        </div>
+    );
+}
 
 export function DashboardVoiceAgent() {
     const {
@@ -25,12 +105,14 @@ export function DashboardVoiceAgent() {
         response,
         error,
         pendingAction,
+        reportData,
         startListening,
         stopListening,
         sendTextQuery,
         confirmAction,
         cancelAction,
         cancel,
+        clearReport,
         analyserNode,
         isSpeaking,
         audioDuration,
@@ -177,6 +259,11 @@ export function DashboardVoiceAgent() {
                                 </button>
                             </div>
                         </div>
+                    )}
+
+                    {/* Report PDF Download Button */}
+                    {reportData && (
+                        <ReportDownloadButton report={reportData} onDone={clearReport} />
                     )}
 
                     {/* Conversation history */}

@@ -325,6 +325,239 @@ export async function POST(req: NextRequest) {
                 break;
             }
 
+            case "report": {
+                const reportType = data.report_type as string;
+                const now = new Date();
+                const startDate = (data.start_date as string) || `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
+                const endDate = (data.end_date as string) || now.toISOString().split('T')[0];
+
+                if (reportType === "guard_attendance") {
+                    // Resolve guard by name
+                    let guardFilter: string | null = null;
+                    if (data.guard_name) {
+                        guardFilter = await resolveEntityId(supabase, "guards", data.guard_name as string, branchId as string);
+                        if (!guardFilter) {
+                            return NextResponse.json({ error: `Guard "${data.guard_name}" not found` }, { status: 404 });
+                        }
+                    }
+
+                    // Fetch attendance records
+                    let query = supabase
+                        .from("attendance")
+                        .select(`*, assignment:assignments(id, shift_type, guard:guards(id, name, guard_code, photo_url, branch_id), place:places(id, name, city, branch_id))`)
+                        .gte("date", startDate)
+                        .lte("date", endDate)
+                        .order("date");
+
+                    const { data: attendance, error: attError } = await query;
+                    if (attError) throw attError;
+
+                    let filtered = attendance || [];
+
+                    // Filter by branch
+                    if (profile.role === "branch_admin" && branchId) {
+                        filtered = filtered.filter((a: any) => a.assignment?.guard?.branch_id === branchId);
+                    }
+
+                    // Filter by guard
+                    if (guardFilter) {
+                        filtered = filtered.filter((a: any) => a.assignment?.guard?.id === guardFilter);
+                    }
+
+                    // Group by guard
+                    const guardMap = new Map<string, any>();
+                    filtered.forEach((record: any) => {
+                        const assignment = record.assignment;
+                        if (!assignment?.guard) return;
+                        const guardId = assignment.guard.id;
+                        if (!guardMap.has(guardId)) {
+                            guardMap.set(guardId, {
+                                guard: assignment.guard,
+                                place: assignment.place,
+                                attendance: [],
+                                summary: { present: 0, absent: 0, late: 0, half_day: 0, leave: 0, total_days: 0, attendance_rate: 0 },
+                                inventory: [],
+                            });
+                        }
+                        const gd = guardMap.get(guardId)!;
+                        gd.attendance.push({
+                            date: record.date, shift: record.shift, status: record.status,
+                            check_in_time: record.check_in_time, check_out_time: record.check_out_time,
+                        });
+                        gd.summary.total_days++;
+                        if (record.status === "present") gd.summary.present++;
+                        else if (record.status === "absent") gd.summary.absent++;
+                        else if (record.status === "late") gd.summary.late++;
+                        else if (record.status === "half_day") gd.summary.half_day++;
+                        else if (record.status === "leave") gd.summary.leave++;
+                    });
+
+                    guardMap.forEach((gd) => {
+                        const workDays = gd.summary.present + gd.summary.late + gd.summary.half_day * 0.5;
+                        gd.summary.attendance_rate = gd.summary.total_days > 0
+                            ? Math.round((workDays / gd.summary.total_days) * 100) : 0;
+                    });
+
+                    const reportData = Array.from(guardMap.values());
+                    const label = data.guard_name
+                        ? `Guard Attendance — ${data.guard_name}`
+                        : "Guard Attendance Report";
+
+                    return NextResponse.json({
+                        success: true,
+                        report: {
+                            reportType: "guard_attendance",
+                            data: reportData,
+                            period: { start: startDate, end: endDate },
+                            label,
+                        },
+                    });
+                }
+
+                if (reportType === "place") {
+                    if (!data.place_name) {
+                        return NextResponse.json({ error: "Place name is required for a place report" }, { status: 400 });
+                    }
+
+                    const placeId = await resolveEntityId(supabase, "places", data.place_name as string, branchId as string);
+                    if (!placeId) {
+                        return NextResponse.json({ error: `Place "${data.place_name}" not found` }, { status: 404 });
+                    }
+
+                    // Get place details
+                    const { data: place } = await supabase.from("places").select("*").eq("id", placeId).single();
+                    if (!place) return NextResponse.json({ error: "Place not found" }, { status: 404 });
+
+                    // Get active assignments
+                    const { data: assignments } = await supabase
+                        .from("assignments")
+                        .select(`id, shift_type, start_date, end_date, guard:guards(id, name, guard_code)`)
+                        .eq("place_id", placeId)
+                        .eq("status", "active");
+
+                    // Get attendance summary
+                    const { data: attendanceRecords } = await supabase
+                        .from("attendance")
+                        .select("status")
+                        .eq("place_id", placeId)
+                        .gte("date", startDate)
+                        .lte("date", endDate);
+
+                    const att = attendanceRecords || [];
+                    const attSummary = {
+                        total_records: att.length,
+                        total_days: att.length,
+                        present: att.filter((a) => a.status === "present").length,
+                        absent: att.filter((a) => a.status === "absent").length,
+                        late: att.filter((a) => a.status === "late").length,
+                        half_day: att.filter((a) => a.status === "half_day").length,
+                        leave: att.filter((a) => a.status === "leave").length,
+                        attendance_rate: 0,
+                    };
+                    if (attSummary.total_records > 0) {
+                        attSummary.attendance_rate = Math.round(((attSummary.present + attSummary.late) / attSummary.total_records) * 100);
+                    }
+
+                    // Get inventory
+                    const { data: invAssignments } = await supabase
+                        .from("inventory_assignments")
+                        .select(`id, quantity, assigned_at, item:inventory_items!item_id(name), unit:inventory_units(serial_number), guard:guards(name)`)
+                        .eq("place_id", placeId)
+                        .is("returned_at", null);
+
+                    const reportData = {
+                        place: {
+                            id: place.id, name: place.name, address: place.address,
+                            city: place.city, contact_person: place.contact_person, contact_phone: place.contact_phone,
+                        },
+                        guards: assignments?.map((a: any) => ({
+                            id: a.guard?.id || "", name: a.guard?.name || "Unknown",
+                            guard_code: a.guard?.guard_code || "", shift: a.shift_type,
+                            start_date: a.start_date, end_date: a.end_date,
+                        })).filter((g: any) => g.id) || [],
+                        attendance_summary: attSummary,
+                        inventory: invAssignments?.map((a: any) => ({
+                            id: a.id, item_name: a.item?.name || "Unknown",
+                            serial_number: a.unit?.serial_number || null,
+                            quantity: a.quantity, assigned_at: a.assigned_at,
+                            assigned_to_guard: a.guard?.name || null,
+                        })) || [],
+                        period: { start: startDate, end: endDate },
+                    };
+
+                    return NextResponse.json({
+                        success: true,
+                        report: {
+                            reportType: "place",
+                            data: reportData,
+                            period: { start: startDate, end: endDate },
+                            label: `Place Report — ${place.name}`,
+                        },
+                    });
+                }
+
+                if (reportType === "monthly_summary") {
+                    // Compute monthly stats
+                    let guardsQuery = supabase.from("guards").select("id", { count: "exact", head: true }).eq("status", "active");
+                    let placesQuery = supabase.from("places").select("id", { count: "exact", head: true }).eq("status", "active");
+                    let assignmentsQuery = supabase.from("assignments").select("id", { count: "exact", head: true }).eq("status", "active");
+
+                    if (profile.role === "branch_admin" && branchId) {
+                        guardsQuery = guardsQuery.eq("branch_id", branchId);
+                        placesQuery = placesQuery.eq("branch_id", branchId);
+                        assignmentsQuery = assignmentsQuery.eq("branch_id", branchId);
+                    }
+
+                    const [{ count: totalGuards }, { count: totalPlaces }, { count: activeAssignments }] = await Promise.all([
+                        guardsQuery, placesQuery, assignmentsQuery,
+                    ]);
+
+                    // Attendance this month
+                    let attQuery = supabase.from("attendance").select("status").gte("date", startDate).lte("date", endDate);
+                    const { data: monthAtt } = await attQuery;
+                    const ma = monthAtt || [];
+
+                    // Invoices this month
+                    let invQuery = supabase.from("invoices").select("total_amount, status, total").gte("created_at", startDate).lte("created_at", endDate + "T23:59:59");
+                    if (profile.role === "branch_admin" && branchId) {
+                        invQuery = invQuery.eq("branch_id", branchId);
+                    }
+                    const { data: monthInv } = await invQuery;
+                    const mi = (monthInv || []) as unknown as { total_amount: number; total: number; status: string }[];
+
+                    const reportData = {
+                        month: now.toLocaleString("default", { month: "long" }),
+                        year: now.getFullYear(),
+                        stats: {
+                            totalGuards: totalGuards || 0,
+                            totalPlaces: totalPlaces || 0,
+                            activeAssignments: activeAssignments || 0,
+                            totalAttendance: ma.length,
+                            presentDays: ma.filter((a) => a.status === "present").length,
+                            absentDays: ma.filter((a) => a.status === "absent").length,
+                            attendanceRate: ma.length > 0
+                                ? Math.round((ma.filter((a) => a.status === "present" || a.status === "late").length / ma.length) * 100)
+                                : 0,
+                            totalRevenue: mi.reduce((sum, inv) => sum + (inv.total_amount || inv.total || 0), 0),
+                            paidAmount: mi.filter((inv) => inv.status === "paid").reduce((sum, inv) => sum + (inv.total_amount || inv.total || 0), 0),
+                            pendingInvoices: mi.filter((inv) => inv.status === "pending" || inv.status === "sent").length,
+                        },
+                    };
+
+                    return NextResponse.json({
+                        success: true,
+                        report: {
+                            reportType: "monthly_summary",
+                            data: reportData,
+                            period: { start: startDate, end: endDate },
+                            label: `Monthly Summary — ${reportData.month} ${reportData.year}`,
+                        },
+                    });
+                }
+
+                return NextResponse.json({ error: `Unknown report type: ${reportType}` }, { status: 400 });
+            }
+
             default:
                 return NextResponse.json(
                     { error: `Unsupported entity: ${entity}` },

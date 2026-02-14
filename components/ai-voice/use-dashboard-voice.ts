@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import type { ManagerAIResponse, ManagerAction } from "@/lib/ai/manager-prompts";
+import type { ManagerAIResponse, ManagerAction, ReportResult } from "@/lib/ai/manager-prompts";
 
 export type DashboardVoiceState = "idle" | "listening" | "thinking" | "speaking";
 
@@ -16,12 +16,14 @@ interface UseDashboardVoiceReturn {
     response: ManagerAIResponse | null;
     error: string | null;
     pendingAction: ManagerAction | null;
+    reportData: ReportResult | null;
     startListening: () => Promise<void>;
     stopListening: () => void;
     sendTextQuery: (text: string) => Promise<void>;
     confirmAction: () => Promise<void>;
     cancelAction: () => void;
     cancel: () => void;
+    clearReport: () => void;
     analyserNode: AnalyserNode | null;
     isSpeaking: boolean;
     audioDuration: number;
@@ -37,6 +39,7 @@ export function useDashboardVoice(): UseDashboardVoiceReturn {
     const [isSpeaking, setIsSpeaking] = useState(false);
     const [audioDuration, setAudioDuration] = useState(0);
     const [pendingAction, setPendingAction] = useState<ManagerAction | null>(null);
+    const [reportData, setReportData] = useState<ReportResult | null>(null);
 
     const conversationRef = useRef<ConversationMessage[]>([]);
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -178,18 +181,6 @@ export function useDashboardVoice(): UseDashboardVoiceReturn {
 
     const executeAction = useCallback(async (action: ManagerAction) => {
         try {
-            // Build FormData to call existing server actions pattern
-            const formData = new FormData();
-
-            if (action.data) {
-                Object.entries(action.data).forEach(([key, value]) => {
-                    if (value !== null && value !== undefined) {
-                        formData.append(key, String(value));
-                    }
-                });
-            }
-
-            // Call the appropriate API endpoint based on entity and type
             const res = await fetch("/api/ai/manager/execute", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -203,6 +194,13 @@ export function useDashboardVoice(): UseDashboardVoiceReturn {
             if (!res.ok) {
                 const errBody = await res.json();
                 throw new Error(errBody.error || "Action failed");
+            }
+
+            const result = await res.json();
+
+            // If this was a report action, store the report data for PDF download
+            if (action.entity === "report" && result.report) {
+                setReportData(result.report as ReportResult);
             }
 
             setPendingAction(null);
@@ -223,6 +221,10 @@ export function useDashboardVoice(): UseDashboardVoiceReturn {
         setPendingAction(null);
         processQuery("No, cancel that");
     }, [processQuery]);
+
+    const clearReport = useCallback(() => {
+        setReportData(null);
+    }, []);
 
     const startListening = useCallback(async () => {
         try {
@@ -330,12 +332,14 @@ export function useDashboardVoice(): UseDashboardVoiceReturn {
         response,
         error,
         pendingAction,
+        reportData,
         startListening,
         stopListening,
         sendTextQuery,
         confirmAction,
         cancelAction,
         cancel,
+        clearReport,
         analyserNode,
         isSpeaking,
         audioDuration,

@@ -34,7 +34,10 @@ export default function NewBranchPage() {
       if (result.success) {
         toast({
           title: "Branch Created",
-          description: "The branch has been created successfully.",
+          description: (result as { warning?: string }).warning
+            ? (result as { warning?: string }).warning
+            : "The branch has been created successfully.",
+          variant: (result as { warning?: string }).warning ? "destructive" : "default",
         });
         router.push("/dashboard/branches");
       } else {
@@ -123,6 +126,40 @@ export default function NewBranchPage() {
               {errors.phone && (
                 <p className="text-sm text-destructive">{errors.phone.message}</p>
               )}
+            </div>
+
+            {/* Branch Admin Account */}
+            <div className="pt-4 border-t">
+              <h3 className="text-sm font-semibold text-gray-700 mb-1">Branch Admin Account</h3>
+              <p className="text-xs text-muted-foreground mb-3">
+                Create login credentials so the branch manager can access their dashboard.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="admin_email">Admin Email</Label>
+                  <Input
+                    id="admin_email"
+                    type="email"
+                    placeholder="branch@sheriffsecurity.com"
+                    {...register("admin_email")}
+                  />
+                  {errors.admin_email && (
+                    <p className="text-sm text-destructive">{errors.admin_email.message}</p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="admin_password">Admin Password</Label>
+                  <Input
+                    id="admin_password"
+                    type="password"
+                    placeholder="Min 6 characters"
+                    {...register("admin_password")}
+                  />
+                  {errors.admin_password && (
+                    <p className="text-sm text-destructive">{errors.admin_password.message}</p>
+                  )}
+                </div>
+              </div>
             </div>
 
             <div className="flex gap-4 pt-4">
