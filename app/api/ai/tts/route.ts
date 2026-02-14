@@ -32,9 +32,9 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        // Forward text to Deepgram Aura-2 TTS
+        // Forward text to Deepgram Aura-2 TTS (Andromeda — warm female voice)
         const response = await fetch(
-            "https://api.deepgram.com/v1/speak?model=aura-2-thalia-en",
+            "https://api.deepgram.com/v1/speak?model=aura-2-andromeda-en",
             {
                 method: "POST",
                 headers: {

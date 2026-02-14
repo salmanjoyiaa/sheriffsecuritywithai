@@ -20,11 +20,15 @@ export default async function DashboardLayout({
   }
 
   // Get user profile with branch info
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("*, branch:branches(*)")
     .eq("id", user.id)
     .single();
+
+  if (profileError) {
+    console.error("Profile query error:", profileError);
+  }
 
   if (!profile) {
     redirect("/login");

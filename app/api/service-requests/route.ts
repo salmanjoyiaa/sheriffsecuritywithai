@@ -119,3 +119,39 @@ export async function POST(req: NextRequest) {
         );
     }
 }
+
+/** PATCH — Update email_status on a service request (public, rate-limited) */
+export async function PATCH(req: NextRequest) {
+    try {
+        const ip =
+            req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+        if (!rateLimit(ip, 10, 60 * 1000)) {
+            return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+        }
+
+        const { id, email_status } = await req.json();
+
+        if (!id || !email_status) {
+            return NextResponse.json({ error: "id and email_status required" }, { status: 400 });
+        }
+
+        if (!["sent", "failed", "sending"].includes(email_status)) {
+            return NextResponse.json({ error: "Invalid email_status" }, { status: 400 });
+        }
+
+        const { error } = await supabase
+            .from("service_requests")
+            .update({ email_status } as Record<string, unknown>)
+            .eq("id", id);
+
+        if (error) {
+            console.error("Error updating email status:", error);
+            return NextResponse.json({ error: "Update failed" }, { status: 500 });
+        }
+
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error("Service request PATCH error:", error);
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    }
+}

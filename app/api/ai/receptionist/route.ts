@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
         const aiResponse = await generateJSON<SheriffAIResponse>(
             prompt,
             SHERIFF_SYSTEM_PROMPT,
-            { temperature: 0.6, maxTokens: 2048 }
+            { temperature: 0.4, maxTokens: 1024 }
         );
 
         // If AI wants to show packages, enrich the response with full package data

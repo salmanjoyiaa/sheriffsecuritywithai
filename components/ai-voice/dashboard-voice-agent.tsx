@@ -71,7 +71,7 @@ export function DashboardVoiceAgent() {
         <div className="fixed bottom-6 right-6 z-50">
             {/* Expanded Panel */}
             {isExpanded && (
-                <div className="mb-3 w-80 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
+                <div className="mb-3 w-[calc(100vw-2rem)] sm:w-80 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden max-h-[80vh] flex flex-col">
                     {/* Panel Header */}
                     <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-primary to-primary-600 text-white">
                         <div className="flex items-center gap-2">
@@ -109,9 +109,9 @@ export function DashboardVoiceAgent() {
                             </span>
                             <button
                                 onClick={handleClose}
-                                className="p-1 rounded hover:bg-white/20 transition-colors"
+                                className="p-2 rounded hover:bg-white/20 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
                             >
-                                <X className="h-3.5 w-3.5" />
+                                <X className="h-4 w-4" />
                             </button>
                         </div>
                     </div>
@@ -163,14 +163,14 @@ export function DashboardVoiceAgent() {
                             <div className="flex gap-2">
                                 <button
                                     onClick={confirmAction}
-                                    className="flex-1 flex items-center justify-center gap-1 py-1.5 bg-green-600 text-white rounded-lg text-xs font-medium hover:bg-green-700 transition-colors"
+                                    className="flex-1 flex items-center justify-center gap-1 py-2.5 bg-green-600 text-white rounded-lg text-xs font-medium hover:bg-green-700 transition-colors min-h-[44px]"
                                 >
-                                    <Check className="h-3 w-3" />
+                                    <Check className="h-4 w-4" />
                                     Confirm
                                 </button>
                                 <button
                                     onClick={cancelAction}
-                                    className="flex-1 flex items-center justify-center gap-1 py-1.5 bg-gray-200 text-gray-700 rounded-lg text-xs font-medium hover:bg-gray-300 transition-colors"
+                                    className="flex-1 flex items-center justify-center gap-1 py-2.5 bg-gray-200 text-gray-700 rounded-lg text-xs font-medium hover:bg-gray-300 transition-colors min-h-[44px]"
                                 >
                                     <XCircle className="h-3 w-3" />
                                     Cancel
@@ -211,23 +211,23 @@ export function DashboardVoiceAgent() {
                             <button
                                 type="submit"
                                 disabled={!textInput.trim() || state !== "idle"}
-                                className="p-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors disabled:opacity-30"
+                                className="p-2.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors disabled:opacity-30 min-w-[44px] min-h-[44px] flex items-center justify-center"
                             >
-                                <Send className="h-3.5 w-3.5" />
+                                <Send className="h-4 w-4" />
                             </button>
                         </form>
                         <button
                             onClick={handleMicPress}
                             disabled={state === "thinking" || state === "speaking"}
-                            className={`p-2 rounded-lg transition-all ${state === "listening"
+                            className={`p-2.5 rounded-lg transition-all min-w-[44px] min-h-[44px] flex items-center justify-center ${state === "listening"
                                     ? "bg-red-500 text-white"
                                     : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                                 } disabled:opacity-30`}
                         >
                             {state === "listening" ? (
-                                <MicOff className="h-4 w-4" />
+                                <MicOff className="h-5 w-5" />
                             ) : (
-                                <Mic className="h-4 w-4" />
+                                <Mic className="h-5 w-5" />
                             )}
                         </button>
                     </div>
@@ -238,9 +238,9 @@ export function DashboardVoiceAgent() {
             {!isExpanded && (
                 <button
                     onClick={handleMicPress}
-                    className="group relative p-4 rounded-full bg-gradient-to-br from-primary to-primary-600 text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all"
+                    className="group relative p-4 rounded-full bg-gradient-to-br from-primary to-primary-600 text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all min-w-[56px] min-h-[56px] flex items-center justify-center"
                 >
-                    <MessageSquare className="h-5 w-5" />
+                    <MessageSquare className="h-6 w-6" />
                     <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white" />
                 </button>
             )}

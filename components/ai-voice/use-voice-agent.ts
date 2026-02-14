@@ -20,6 +20,17 @@ interface ServiceRequestResult {
     branch_id: string | null;
 }
 
+export interface PendingConfirmation {
+    customerInfo: {
+        name: string;
+        email: string;
+        phone: string | null;
+        company: string | null;
+    };
+    serviceDetails: SheriffAIResponse["serviceDetails"];
+    pricing: SheriffAIResponse["pricing"];
+}
+
 interface UseVoiceAgentReturn {
     state: VoiceState;
     transcript: string;
@@ -36,6 +47,11 @@ interface UseVoiceAgentReturn {
     packages: ServicePackage[];
     serviceRequest: ServiceRequestResult | null;
     conversationHistory: ConversationMessage[];
+    pendingConfirmation: PendingConfirmation | null;
+    confirmRequest: () => Promise<void>;
+    editConfirmation: (updated: PendingConfirmation) => void;
+    cancelConfirmation: () => void;
+    emailStatus: "none" | "sending" | "sent" | "failed";
 }
 
 export function useVoiceAgent(): UseVoiceAgentReturn {
@@ -49,6 +65,8 @@ export function useVoiceAgent(): UseVoiceAgentReturn {
     const [audioDuration, setAudioDuration] = useState(0);
     const [packages, setPackages] = useState<ServicePackage[]>([]);
     const [serviceRequest, setServiceRequest] = useState<ServiceRequestResult | null>(null);
+    const [pendingConfirmation, setPendingConfirmation] = useState<PendingConfirmation | null>(null);
+    const [emailStatus, setEmailStatus] = useState<"none" | "sending" | "sent" | "failed">("none");
 
     const conversationRef = useRef<ConversationMessage[]>([]);
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -100,6 +118,68 @@ export function useVoiceAgent(): UseVoiceAgentReturn {
         setMicAnalyser(null);
     }, []);
 
+    const playTTS = useCallback(
+        async (text: string) => {
+            try {
+                setState("speaking");
+                setIsSpeaking(true);
+
+                const ttsRes = await fetch("/api/ai/tts", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ text }),
+                });
+
+                if (!ttsRes.ok) {
+                    throw new Error("TTS request failed");
+                }
+
+                const audioBlob = await ttsRes.blob();
+                const audioUrl = URL.createObjectURL(audioBlob);
+                const audio = new Audio(audioUrl);
+                currentAudioRef.current = audio;
+
+                const audioCtx = getAudioContext();
+                if (audioCtx.state === "suspended") {
+                    await audioCtx.resume();
+                }
+                const source = audioCtx.createMediaElementSource(audio);
+                const analyser = audioCtx.createAnalyser();
+                analyser.fftSize = 256;
+                source.connect(analyser);
+                analyser.connect(audioCtx.destination);
+                setAnalyserNode(analyser);
+
+                audio.addEventListener("loadedmetadata", () => {
+                    setAudioDuration(audio.duration);
+                });
+
+                audio.addEventListener("ended", () => {
+                    setState("idle");
+                    setIsSpeaking(false);
+                    setAnalyserNode(null);
+                    currentAudioRef.current = null;
+                    URL.revokeObjectURL(audioUrl);
+                });
+
+                audio.addEventListener("error", () => {
+                    setState("idle");
+                    setIsSpeaking(false);
+                    setAnalyserNode(null);
+                    currentAudioRef.current = null;
+                    URL.revokeObjectURL(audioUrl);
+                });
+
+                await audio.play();
+            } catch (err) {
+                console.error("TTS playback error:", err);
+                setState("idle");
+                setIsSpeaking(false);
+            }
+        },
+        [getAudioContext]
+    );
+
     const processQuery = useCallback(
         async (userMessage: string) => {
             setState("thinking");
@@ -139,68 +219,18 @@ export function useVoiceAgent(): UseVoiceAgentReturn {
                     content: data.message,
                 });
 
-                // Handle service request creation
+                // Instead of auto-creating, show confirmation card for user approval
                 if (data.createServiceRequest && data.captureCustomerInfo) {
-                    try {
-                        // 1. Create service request in database
-                        const srRes = await fetch("/api/service-requests", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({
-                                customer_name: data.captureCustomerInfo.name,
-                                customer_email: data.captureCustomerInfo.email,
-                                customer_phone: data.captureCustomerInfo.phone,
-                                company_name: data.captureCustomerInfo.company,
-                                service_type: data.serviceDetails.serviceType,
-                                location_address: data.serviceDetails.location,
-                                location_city: data.serviceDetails.city,
-                                location_state: data.serviceDetails.state,
-                                num_guards: data.serviceDetails.numGuards,
-                                duration_hours: data.serviceDetails.durationHours,
-                                start_date: data.serviceDetails.startDate,
-                                start_time: data.serviceDetails.startTime,
-                                special_requirements: data.serviceDetails.specialRequirements,
-                                additional_notes: data.serviceDetails.additionalNotes,
-                                package_id: data.pricing.packageId,
-                                hourly_rate: data.pricing.hourlyRate,
-                                estimated_total: data.pricing.estimatedTotal,
-                                ai_transcript: conversationRef.current
-                                    .map((m) => `${m.role}: ${m.content}`)
-                                    .join("\n"),
-                            }),
-                        });
-
-                        const sr = await srRes.json();
-
-                        if (sr.success) {
-                            setServiceRequest(sr);
-
-                            // 2. Send confirmation emails
-                            await fetch("/api/send-invoice", {
-                                method: "POST",
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({
-                                    requestNumber: sr.request_number,
-                                    customerName: data.captureCustomerInfo.name,
-                                    customerEmail: data.captureCustomerInfo.email,
-                                    customerPhone: data.captureCustomerInfo.phone,
-                                    companyName: data.captureCustomerInfo.company,
-                                    serviceType: data.serviceDetails.serviceType || "security",
-                                    location: data.serviceDetails.location || "To be confirmed",
-                                    numGuards: data.serviceDetails.numGuards || 1,
-                                    durationHours: data.serviceDetails.durationHours || 0,
-                                    hourlyRate: data.pricing.hourlyRate || 0,
-                                    estimatedTotal: data.pricing.estimatedTotal || 0,
-                                    currency: "PKR",
-                                    startDate: data.serviceDetails.startDate,
-                                    startTime: data.serviceDetails.startTime,
-                                    specialRequirements: data.serviceDetails.specialRequirements,
-                                }),
-                            });
-                        }
-                    } catch (err) {
-                        console.error("Error creating service request:", err);
-                    }
+                    setPendingConfirmation({
+                        customerInfo: {
+                            name: data.captureCustomerInfo.name,
+                            email: data.captureCustomerInfo.email,
+                            phone: data.captureCustomerInfo.phone,
+                            company: data.captureCustomerInfo.company,
+                        },
+                        serviceDetails: data.serviceDetails,
+                        pricing: data.pricing,
+                    });
                 }
 
                 // Play TTS audio
@@ -216,72 +246,121 @@ export function useVoiceAgent(): UseVoiceAgentReturn {
             }
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        []
+        [playTTS]
     );
 
-    const playTTS = useCallback(
-        async (text: string) => {
+    // Submit confirmed service request + send emails via PUBLIC route
+    const submitServiceRequest = useCallback(
+        async (confirmation: PendingConfirmation) => {
             try {
-                setState("speaking");
-                setIsSpeaking(true);
-
-                const ttsRes = await fetch("/api/ai/tts", {
+                const srRes = await fetch("/api/service-requests", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ text }),
+                    body: JSON.stringify({
+                        customer_name: confirmation.customerInfo.name,
+                        customer_email: confirmation.customerInfo.email,
+                        customer_phone: confirmation.customerInfo.phone,
+                        company_name: confirmation.customerInfo.company,
+                        service_type: confirmation.serviceDetails.serviceType,
+                        location_address: confirmation.serviceDetails.location,
+                        location_city: confirmation.serviceDetails.city,
+                        location_state: confirmation.serviceDetails.state,
+                        num_guards: confirmation.serviceDetails.numGuards,
+                        duration_hours: confirmation.serviceDetails.durationHours,
+                        start_date: confirmation.serviceDetails.startDate,
+                        start_time: confirmation.serviceDetails.startTime,
+                        special_requirements: confirmation.serviceDetails.specialRequirements,
+                        additional_notes: confirmation.serviceDetails.additionalNotes,
+                        package_id: confirmation.pricing.packageId,
+                        hourly_rate: confirmation.pricing.hourlyRate,
+                        estimated_total: confirmation.pricing.estimatedTotal,
+                        ai_transcript: conversationRef.current
+                            .map((m) => `${m.role}: ${m.content}`)
+                            .join("\n"),
+                    }),
                 });
 
-                if (!ttsRes.ok) {
-                    throw new Error("TTS request failed");
+                const sr = await srRes.json();
+
+                if (sr.success) {
+                    setServiceRequest(sr);
+
+                    // Send emails via public route (no auth needed)
+                    setEmailStatus("sending");
+                    // Track sending status in DB
+                    fetch("/api/service-requests", {
+                        method: "PATCH",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ id: sr.id, email_status: "sending" }),
+                    }).catch(() => {});
+
+                    try {
+                        const emailRes = await fetch("/api/public/send-confirmation", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                requestNumber: sr.request_number,
+                                customerName: confirmation.customerInfo.name,
+                                customerEmail: confirmation.customerInfo.email,
+                                customerPhone: confirmation.customerInfo.phone,
+                                companyName: confirmation.customerInfo.company,
+                                serviceType: confirmation.serviceDetails.serviceType || "security",
+                                location: confirmation.serviceDetails.location || "To be confirmed",
+                                numGuards: confirmation.serviceDetails.numGuards || 1,
+                                durationHours: confirmation.serviceDetails.durationHours || 0,
+                                hourlyRate: confirmation.pricing.hourlyRate || 0,
+                                estimatedTotal: confirmation.pricing.estimatedTotal || 0,
+                                currency: "PKR",
+                                startDate: confirmation.serviceDetails.startDate,
+                                startTime: confirmation.serviceDetails.startTime,
+                                specialRequirements: confirmation.serviceDetails.specialRequirements,
+                            }),
+                        });
+                        const finalStatus = emailRes.ok ? "sent" : "failed";
+                        setEmailStatus(finalStatus);
+                        // Track final status in DB
+                        fetch("/api/service-requests", {
+                            method: "PATCH",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ id: sr.id, email_status: finalStatus }),
+                        }).catch(() => {});
+                    } catch {
+                        setEmailStatus("failed");
+                        fetch("/api/service-requests", {
+                            method: "PATCH",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ id: sr.id, email_status: "failed" }),
+                        }).catch(() => {});
+                    }
+
+                    await playTTS("Your service request has been confirmed! A confirmation email is on its way. Our team will contact you within one hour.");
                 }
-
-                const audioBlob = await ttsRes.blob();
-                const audioUrl = URL.createObjectURL(audioBlob);
-                const audio = new Audio(audioUrl);
-                currentAudioRef.current = audio;
-
-                // Set up audio analyser for orb visualization
-                const audioCtx = getAudioContext();
-                if (audioCtx.state === "suspended") {
-                    await audioCtx.resume();
-                }
-                const source = audioCtx.createMediaElementSource(audio);
-                const analyser = audioCtx.createAnalyser();
-                analyser.fftSize = 256;
-                source.connect(analyser);
-                analyser.connect(audioCtx.destination);
-                setAnalyserNode(analyser);
-
-                // Get duration for subtitles
-                audio.addEventListener("loadedmetadata", () => {
-                    setAudioDuration(audio.duration);
-                });
-
-                audio.addEventListener("ended", () => {
-                    setState("idle");
-                    setIsSpeaking(false);
-                    setAnalyserNode(null);
-                    currentAudioRef.current = null;
-                    URL.revokeObjectURL(audioUrl);
-                });
-
-                audio.addEventListener("error", () => {
-                    setState("idle");
-                    setIsSpeaking(false);
-                    setAnalyserNode(null);
-                    currentAudioRef.current = null;
-                    URL.revokeObjectURL(audioUrl);
-                });
-
-                await audio.play();
             } catch (err) {
-                console.error("TTS playback error:", err);
-                setState("idle");
-                setIsSpeaking(false);
+                console.error("Error creating service request:", err);
+                setError("Failed to create service request.");
             }
         },
-        [getAudioContext]
+        [playTTS]
     );
+
+    // User confirms pending request (button or voice "confirm")
+    const confirmRequest = useCallback(async () => {
+        if (!pendingConfirmation) return;
+        const conf = pendingConfirmation;
+        setPendingConfirmation(null);
+        await submitServiceRequest(conf);
+    }, [pendingConfirmation, submitServiceRequest]);
+
+    // User edits pending confirmation
+    const editConfirmation = useCallback((updated: PendingConfirmation) => {
+        setPendingConfirmation(updated);
+    }, []);
+
+    // User cancels
+    const cancelConfirmation = useCallback(() => {
+        setPendingConfirmation(null);
+        // Don't call playTTS in cancelConfirmation to avoid circular dependency
+    }, []);
 
     const startListening = useCallback(async () => {
         try {
@@ -409,9 +488,23 @@ export function useVoiceAgent(): UseVoiceAgentReturn {
         async (text: string) => {
             if (!text.trim()) return;
             setTranscript(text);
+
+            // Handle confirm/cancel for pending confirmation via text
+            if (pendingConfirmation) {
+                const lower = text.toLowerCase().trim();
+                if (lower === "confirm" || lower === "yes" || lower === "go ahead" || lower === "confirmed") {
+                    await confirmRequest();
+                    return;
+                }
+                if (lower === "cancel" || lower === "no" || lower === "nevermind") {
+                    cancelConfirmation();
+                    return;
+                }
+            }
+
             await processQuery(text);
         },
-        [processQuery]
+        [processQuery, pendingConfirmation, confirmRequest, cancelConfirmation]
     );
 
     return {
@@ -430,5 +523,10 @@ export function useVoiceAgent(): UseVoiceAgentReturn {
         packages,
         serviceRequest,
         conversationHistory: conversationRef.current,
+        pendingConfirmation,
+        confirmRequest,
+        editConfirmation,
+        cancelConfirmation,
+        emailStatus,
     };
 }

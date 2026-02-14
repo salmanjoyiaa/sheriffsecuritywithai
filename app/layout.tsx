@@ -12,6 +12,9 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  icons: {
+    icon: "/favicon.svg",
+  },
   title: "Sheriff Security Company Pvt. Ltd | Elite Security Services Pakistan",
   description:
     "Professional security services across Pakistan since 2004. Expert bodyguards, security systems, walk-through gates, metal detectors, and comprehensive protection. Trusted by 100+ leading brands including Khaadi, KFC, and more.",
